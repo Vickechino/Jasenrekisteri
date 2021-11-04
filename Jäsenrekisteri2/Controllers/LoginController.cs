@@ -112,5 +112,47 @@ namespace Jäsenrekisteri2.Controllers
             }
             else return RedirectToAction("Index");
         }
+
+        //käyttäjän Luonti näkymän palatus
+        public ActionResult Create() 
+        {
+            if (Session["UserName"] != null && Session["Permission"].Equals(1))
+            {
+                return View();
+            }
+            else return RedirectToAction("Index", "Home");
+        }
+        //Käyttäjän luominen
+        [HttpPost]  
+        public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate")] Login newUser)
+        {
+            if (ModelState.IsValid && Session["UserName"] != null && Session["Permission"].ToString() == "1")
+            {
+                var userNameAlreadyExists = db.Logins.Any(x => x.username == newUser.username); //Katsotaan löytyykö samalla nimellä käyttäjä
+                if (userNameAlreadyExists)
+                {
+                    ViewBag.CreateUserError = "Käyttäjänimi on VARATTU";
+                    return View();
+                }
+                try
+                {
+                    newUser.joinDate = DateTime.Now;
+                    var bpassword = System.Text.Encoding.UTF8.GetBytes(newUser.password);
+                    var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword);
+                    newUser.password = Convert.ToBase64String(hash);
+                    db.Logins.Add(newUser);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    ViewBag.CreateUserError = "Tapahtui virhe! Tarkista syöttämäsi tiedot.";
+                    return View();
+                }
+
+            }
+            return View(User);
+
+        }
     }
 }
