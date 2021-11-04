@@ -154,5 +154,28 @@ namespace Jäsenrekisteri2.Controllers
             return View(User);
 
         }
+        
+        //Käyttäjän muokkausnäkymän palautus
+        public ActionResult Edit(int? id) 
+        {
+            if (id == null) { return RedirectToAction("Index"); }
+            try
+            {
+                if (Session["Username"] == null) return RedirectToAction("Login", "Home");
+                Login user = db.Logins.Find(id);
+                if (user == null) RedirectToAction("Index", "Home");
+                if (Session["Username"] != null && Session["Permission"].Equals(1))
+                {
+                    user.password = "";
+                    return View(user);
+                }
+                else return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index");
+            }
+            finally { db.Dispose(); }
+        }
     }
 }
