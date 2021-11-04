@@ -71,7 +71,6 @@ namespace Jäsenrekisteri2.Controllers
         public ActionResult LogOut() 
         {
             Session.Abandon();
-            ViewBag.LoggedStatus = "Out";
             return RedirectToAction("Index", "Home");
         }
         
@@ -97,7 +96,6 @@ namespace Jäsenrekisteri2.Controllers
                 try
                 {
                     Login user = db.Logins.Find(id);
-
                     db.Logins.Remove(user);
                     db.SaveChanges();
                     if (Session["Username"].ToString() == user.username) { return RedirectToAction("Logout", "Login"); }
@@ -176,6 +174,47 @@ namespace Jäsenrekisteri2.Controllers
                 return RedirectToAction("Index");
             }
             finally { db.Dispose(); }
+        }
+        [HttpPost] //Käyttäjän muokkaus
+        [ValidateAntiForgeryToken] //Katso https://go.microsoft.com/fwlink/?LinkId=317598
+        public ActionResult Edit([Bind(Include = "username, password, email, firstname, lastname, admin, member_id, lastseen, joinDate")] Login editee)
+        {
+            if (ModelState.IsValid && (Session["UserName"] != null))
+            {
+                var userNameAlreadyExists = db.Logins.Any(x => x.username == editee.username); //Katsotaan löytyykö samalla nimellä käyttäjää
+                if (userNameAlreadyExists && db.Logins.Find(editee.member_id).username != editee.username)
+                {
+                    ViewBag.CreateUserError = "Error 1 käyttäjää muokatessa, tarkista tiedot";
+                    return View();
+                }
+                try
+                {
+                    if (editee.password == null)
+                    {
+                        editee.password = db.Logins.Find(editee.member_id).password; //Salasana kenttä on tyhjä, haetaan nykyinen tietokannasta, eikä hashata.
+                    }
+                    else
+                    {
+                        var bpassword = System.Text.Encoding.UTF8.GetBytes(editee.password);
+                        var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword); //Muussa tapauksessa syötetty salasana hashataan ennen tiedon talletusta.
+                        editee.password = Convert.ToBase64String(hash);
+                    }
+                    var existingEntity = db.Logins.Find(editee.member_id);
+                    db.Entry(existingEntity).CurrentValues.SetValues(editee);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    ViewBag.CreateUserError = "Error 2 käyttäjää muokattaessa, tarkista tiedot";
+                    return View();
+                }
+                finally
+                {
+                    db.Dispose();
+                }
+            }
+            return View(User);
         }
     }
 }

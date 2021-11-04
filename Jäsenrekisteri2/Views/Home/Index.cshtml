@@ -23,7 +23,7 @@
     }
     @if (Session["Username"] != null)
     {
-        if (Session["Permission"].Equals(1))
+        if (Session["Permission"] != null && Session["Permission"].Equals(1))
         {
             <p>
                 @Html.ActionLink("LUO UUSI", "Create", "Login")
@@ -75,15 +75,22 @@
     <td>
         @Html.DisplayFor(modelItem => item.email)
     </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.admin)
-    </td>
-    @if (Session["Permission"].Equals(1))
+    @if (item.admin.Equals(1))
     {
-    <td>
-        @Html.ActionLink("Poista", "Delete", "Login", new { id = item.member_id }, null) |
-        @Html.ActionLink("Muokkaa", "Edit", "Login", new { id = item.member_id }, null)
-    </td>}
+        <td>KYLLÄ</td>
+
+    }
+    else
+    {
+        <td>EI</td>
+    }
+    @if (Session["Permission"] != null && Session["Permission"].Equals(1))
+    {
+        <td>
+            @Html.ActionLink("Poista", "Delete", "Login", new { id = item.member_id }, null) |
+            @Html.ActionLink("Muokkaa", "Edit", "Login", new { id = item.member_id }, null)
+        </td>
+}
 </tr>
         }
     }
