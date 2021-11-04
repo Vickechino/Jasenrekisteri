@@ -11,16 +11,35 @@
     @Html.ActionLink("LUO UUSI", "Create")
 </p>
 <table class="table table-hover">
+    @if (Session["Username"] == null) {
+        <tr>
+            <th>
+                Nimi
+            </th>
+            <th>
+                Liittynyt
+            </th>
+            <th>
+        </tr>
+    }
+    @if (Session["Username"] != null)
+    {
+        <tr>
+            <th>
+                Nimi
+            </th>
+            <th>
+                Liittynyt
+            </th>
+            <th>
+                Sähköposti
+            </th>
+            <th>
+                Admin
+            </th>
+        </tr>
+    }
 
-    <tr>
-        <th>
-            Nimi
-        </th>
-        <th>
-            Liittynyt
-        </th>
-        <th>
-    </tr>
     @foreach (var item in Model)
     {
         if (Session["Username"] == null)
@@ -34,8 +53,7 @@
                     @Html.DisplayFor(modelItem => item.joinDate)
                 </td>
                 <td>
-                    @Html.ActionLink("Poista", "Delete", "Login", new { id = item.member_id }, null) |
-                    @Html.ActionLink("Muokkaa", "Edit", "Login", new { id = item.member_id }, null)
+                    @Html.ActionLink("Kirjaudu lisätietoja varten", "Login", "Login")
                 </td>
             </tr>
         }

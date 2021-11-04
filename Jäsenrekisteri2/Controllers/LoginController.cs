@@ -11,7 +11,6 @@ namespace Jäsenrekisteri2.Controllers
 {
     public class LoginController : Controller
     {
-        public Boolean isMember, isAdmin;
         JäsenrekisteriEntities db = new JäsenrekisteriEntities();
         // GET: Login
         public ActionResult Index()
@@ -49,8 +48,6 @@ namespace Jäsenrekisteri2.Controllers
                     Session["UserID"] = LoggedUser.member_id;
                     Session["firstname"] = LoggedUser.firstname;
                     Session["lastname"] = LoggedUser.lastname;
-                    isMember = true;
-                    if (Session["Permission"].Equals(1)) { isAdmin = true; }
                     LoggedUser.lastseen = DateTime.Now;
                     db.Entry(LoggedUser).State = EntityState.Modified;
                     db.SaveChanges();
