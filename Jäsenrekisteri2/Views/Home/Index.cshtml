@@ -5,13 +5,12 @@
     ViewBag.Title = "JÄSENLISTA - YLPEÄT JÄSENEMME";
 }
 
-<h2>YLPEÄT JÄSENET</h2>
+<h3>RYHMÄ RY - YLPEÄT JÄSENET</h3>
 
-<p>
-    @Html.ActionLink("LUO UUSI", "Create")
-</p>
+
 <table class="table table-hover">
-    @if (Session["Username"] == null) {
+    @if (Session["Username"] == null)
+    {
         <tr>
             <th>
                 Nimi
@@ -24,6 +23,12 @@
     }
     @if (Session["Username"] != null)
     {
+        if (Session["Permission"].Equals(1))
+        {
+            <p>
+                @Html.ActionLink("LUO UUSI", "Create", "Login")
+            </p>
+        }
         <tr>
             <th>
                 Nimi
@@ -60,24 +65,26 @@
         else if (Session["Username"] != null)
         {
 
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.fullname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.joinDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.admin)
-                </td>
-                <td>
-                    @Html.ActionLink("Poista", "Delete", "Login", new { id = item.member_id }, null) |
-                    @Html.ActionLink("Muokkaa", "Edit", "Login", new { id = item.member_id }, null)
-                </td>
-            </tr>
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.fullname)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.joinDate)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.email)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.admin)
+    </td>
+    @if (Session["Permission"].Equals(1))
+    {
+    <td>
+        @Html.ActionLink("Poista", "Delete", "Login", new { id = item.member_id }, null) |
+        @Html.ActionLink("Muokkaa", "Edit", "Login", new { id = item.member_id }, null)
+    </td>}
+</tr>
         }
     }
 
