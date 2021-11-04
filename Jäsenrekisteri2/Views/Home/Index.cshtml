@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Jäsenrekisteri2.Models.Login>
+@using Jäsenrekisteri2.Models;
 
 @{
     ViewBag.Title = "JÄSENLISTA - YLPEÄT JÄSENEMME";
@@ -10,6 +11,7 @@
     @Html.ActionLink("LUO UUSI", "Create")
 </p>
 <table class="table table-hover">
+
     <tr>
         <th>
             Nimi
@@ -19,21 +21,46 @@
         </th>
         <th>
     </tr>
-
-        @foreach (var item in Model)
+    @foreach (var item in Model)
+    {
+        if (Session["Username"] == null)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.fullname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.joinDate)
-            </td>
-            <td>
-                @Html.ActionLink("Poista", "Delete", "Login", new { id = item.member_id }, null) |
-                @Html.ActionLink("Muokkaa", "Edit", "Login", new { id = item.member_id }, null)
-            </td>
-        </tr>
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.fullname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.joinDate)
+                </td>
+                <td>
+                    @Html.ActionLink("Poista", "Delete", "Login", new { id = item.member_id }, null) |
+                    @Html.ActionLink("Muokkaa", "Edit", "Login", new { id = item.member_id }, null)
+                </td>
+            </tr>
+        }
+        else if (Session["Username"] != null)
+        {
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.fullname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.joinDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.admin)
+                </td>
+                <td>
+                    @Html.ActionLink("Poista", "Delete", "Login", new { id = item.member_id }, null) |
+                    @Html.ActionLink("Muokkaa", "Edit", "Login", new { id = item.member_id }, null)
+                </td>
+            </tr>
+        }
     }
 
-    </table>
+</table>

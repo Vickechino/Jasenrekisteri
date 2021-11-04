@@ -19,9 +19,9 @@ namespace Jäsenrekisteri2.Controllers
             {
                 item.fullname = item.firstname + " " + item.lastname;
                 item.password = null;
-                item.email = null;
+                //item.email = null;
                 item.username = null;
-                item.admin = null;
+                //item.admin = null;
             }
             return View(model);
 
