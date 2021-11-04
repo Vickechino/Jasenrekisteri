@@ -31,12 +31,6 @@ namespace Jäsenrekisteri2.Controllers
         {
             if (ModelState.IsValid && (Session["UserName"] != null))
             {
-                var userNameAlreadyExists = db.Logins.Any(x => x.username == editee.username); //Katsotaan löytyykö samalla nimellä käyttäjää
-                if (userNameAlreadyExists && db.Logins.Find(editee.member_id).username != editee.username)
-                {
-                    ViewBag.CreateUserError = "Error 1 käyttäjääsi muokattessa, tarkista tiedot";
-                    return View();
-                }
                 try
                 {
                     if (editee.password == null)
@@ -49,6 +43,9 @@ namespace Jäsenrekisteri2.Controllers
                         var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword); //Muussa tapauksessa syötetty salasana hashataan ennen tiedon talletusta.
                         editee.password = Convert.ToBase64String(hash);
                     }
+                    editee.username = db.Logins.Find(editee.member_id).username;
+                    editee.admin = db.Logins.Find(editee.member_id).admin;
+                    editee.joinDate = db.Logins.Find(editee.member_id).joinDate;
                     var existingEntity = db.Logins.Find(editee.member_id);
                     db.Entry(existingEntity).CurrentValues.SetValues(editee);
                     db.SaveChanges();
