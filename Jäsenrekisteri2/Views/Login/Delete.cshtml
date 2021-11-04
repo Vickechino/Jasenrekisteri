@@ -1,0 +1,46 @@
+﻿@model Jäsenrekisteri2.Models.Login
+
+@{
+    ViewBag.Title = "Poiston varmistus";
+}
+
+
+<div>
+    <h3>Haluatko todella poistaa käyttäjän?</h3>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.username)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fullname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fullname)
+        </dd>
+
+
+    </dl>
+    <div class="col-lg-offset-2">
+        <label class="text-danger">
+            @ViewBag.DeleteUserError
+        </label>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Poista" class="btn btn-default" /> |
+            @Html.ActionLink("Takaisin listaan", "Index")
+        </div>
+    }
+</div>

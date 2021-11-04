@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -14,16 +15,16 @@ namespace Jäsenrekisteri2.Controllers
         // GET: Login
         public ActionResult Index()
         {
-            if (Session["username"] != null) { return RedirectToAction("Index", "Home"); } //Palautetaan login näkymä jos ei olla kirjauduttu
+            if (Session["username"] != null) { return RedirectToAction("Index", "Home"); } //Palautetaan login näkymä ellei olla jo kirjauduttu
             else return View("Login");
         }
             public ActionResult Login() //Login näkymän palautus
         {
-            if (Session["username"] != null) { return RedirectToAction("Index", "Home"); } //Palautetaan login näkymä jos ei olla kirjauduttu
+            if (Session["username"] != null) { return RedirectToAction("Index", "Home"); } //Palautetaan login näkymä ellei olla jo kirjauduttu
             else return View();
         }
         
-        //Käyttäjän sisäänkirjautuminen 
+        //Käyttäjän Sisäänkirjautuminen ALKAA TÄSTÄ
         [HttpPost]
         public ActionResult Authorize([Bind(Include = "username, password")] Login LoginModel) 
         {
@@ -42,11 +43,11 @@ namespace Jäsenrekisteri2.Controllers
                 var LoggedUser = db.Logins.SingleOrDefault(x => x.username == LoginModel.username && x.password == LoginModel.password);
                 if (LoggedUser != null)
                 {
-                    Session["UserName"] = LoggedUser.username;
+                    Session["Username"] = LoggedUser.username;
                     Session["Permission"] = LoggedUser.admin;
                     Session["UserID"] = LoggedUser.member_id;
-                    Session["firstName"] = LoggedUser.firstname;
-                    Session["lastName"] = LoggedUser.lastname;
+                    Session["firstname"] = LoggedUser.firstname;
+                    Session["lastname"] = LoggedUser.lastname;
                     LoggedUser.lastseen = DateTime.Now;
                     db.Entry(LoggedUser).State = EntityState.Modified;
                     db.SaveChanges();
@@ -54,7 +55,7 @@ namespace Jäsenrekisteri2.Controllers
                 }
                 else
                 {
-                    LoginModel.LoginMessage = "Väärä käyttäjätunnus/salasana";
+                    LoginModel.LoginMessage = "Virheellinen käyttäjätunnus/salasana";
                     return View("Login", LoginModel);
                 }
             }
@@ -63,6 +64,53 @@ namespace Jäsenrekisteri2.Controllers
                 LoginModel.LoginMessage = "Salasana ei voi olla tyhjä";
                 return View("Login", LoginModel);
             }
+        }
+        //Käyttäjän Sisäänkirjautuminen LOPPUU TÄHÄN
+
+        //Käyttäjän Uloskirjautuminen
+        public ActionResult LogOut() 
+        {
+            Session.Abandon();
+            ViewBag.LoggedStatus = "Out";
+            return RedirectToAction("Index", "Home");
+        }
+        
+        //Käyttäjän poistonäkymän palautus
+        public ActionResult Delete(int? id) 
+        {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            Login chosenLogin = db.Logins.Find(id);
+            if (chosenLogin == null) return RedirectToAction("Index", "Home");
+            if (Session["Username"] != null && Session["Permission"].Equals(1))
+            {
+                chosenLogin.fullname = chosenLogin.firstname + " " + chosenLogin.lastname;
+                return View(chosenLogin);
+            }
+            else return RedirectToAction("Index");
+        }
+        [HttpPost, ActionName("Delete")] //Käyttäjän poisto
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            if (Session["Username"] != null && Session["Permission"].Equals(1))
+            {
+                try
+                {
+                    Login user = db.Logins.Find(id);
+
+                    db.Logins.Remove(user);
+                    db.SaveChanges();
+                    if (Session["Username"].ToString() == user.username) { return RedirectToAction("Logout", "Login"); }
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    ViewBag.DeleteUserError = "Delete failed!";
+                    return View();
+                }
+
+            }
+            else return RedirectToAction("Index");
         }
     }
 }

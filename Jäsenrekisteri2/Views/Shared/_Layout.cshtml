@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - Ryhmä ry sivu</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
@@ -21,8 +21,26 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    @if (Session["UserName"] == null)
+                    {
+                        <li>@Html.ActionLink("LOGIN", "Login", "Login")</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("LOGOUT", "Logout", "Login")</li>
+                        <li>@Html.ActionLink("EDIT PROFILE", "Edit", "Profile")</li>
+                        <li>@Html.ActionLink("ACTION2", "Return", "Loanx")</li>
+                    }
+                    @if (Session["Permission"] != null && Session["Permission"].Equals(1))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">Admin</a>
+                            <div class="dropdown-menu" style="">
+                                <ul class="dropdown-item">@Html.ActionLink("KÄYTTÄJÄT", "Index", "Users")</ul>
+                                <ul class="dropdown-item">@Html.ActionLink("OUNAUS", "Index", "Locations")</ul>
+                            </div>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>

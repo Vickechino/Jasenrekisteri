@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="JäsenrekisteriModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="JäsenrekisteriModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Logins">
           <Key>
             <PropertyRef Name="member_id" />
@@ -17,12 +17,12 @@
           <Property Name="admin" Type="int" />
           <Property Name="firstname" Type="nvarchar" MaxLength="100" />
           <Property Name="lastname" Type="nvarchar" MaxLength="100" />
+          <Property Name="joinDate" Type="datetime" />
         </EntityType>
         <EntityContainer Name="JäsenrekisteriModelStoreContainer">
           <EntitySet Name="Logins" EntityType="Self.Logins" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="JäsenrekisteriModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -38,6 +38,7 @@
           <Property Name="admin" Type="Int32" />
           <Property Name="firstname" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="lastname" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="joinDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityContainer Name="JäsenrekisteriEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Logins" EntityType="Self.Login" />
@@ -51,6 +52,7 @@
           <EntitySetMapping Name="Logins">
             <EntityTypeMapping TypeName="JäsenrekisteriModel.Login">
               <MappingFragment StoreEntitySet="Logins">
+                <ScalarProperty Name="joinDate" ColumnName="joinDate" />
                 <ScalarProperty Name="member_id" ColumnName="member_id" />
                 <ScalarProperty Name="username" ColumnName="username" />
                 <ScalarProperty Name="email" ColumnName="email" />

@@ -1,10 +1,10 @@
 ﻿@model Jäsenrekisteri2.Models.Login
 
 @{
-    ViewBag.Title = "This is the viewbag title!";
+    ViewBag.Title = "Kirjaudu sisään - 1337 ry";
 }
 
-<h2>Header woo!</h2>
+<h2>Kirjaudu sisään</h2>
 
 @using (Html.BeginForm("Authorize", "Login", FormMethod.Post))
 {
@@ -12,8 +12,8 @@
 
     <div class="form-horizontal">
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.member_id)
+        @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.member_id)*@
         <div class="form-group">
             @Html.Label("Käyttäjänimi", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
