@@ -1,10 +1,7 @@
 ﻿using Jäsenrekisteri2.Models;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Jäsenrekisteri2.Controllers
@@ -77,7 +74,7 @@ namespace Jäsenrekisteri2.Controllers
         //Käyttäjän poistonäkymän palautus
         public ActionResult Delete(int? id) 
         {
-            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            if (id == null) return RedirectToAction("Index"); ;
             Login chosenLogin = db.Logins.Find(id);
             if (chosenLogin == null) return RedirectToAction("Index", "Home");
             if (Session["Username"] != null && Session["Permission"].Equals(1))

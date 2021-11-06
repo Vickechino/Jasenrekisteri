@@ -30,16 +30,6 @@
                         <li>@Html.ActionLink("Kirjaudu ulos", "Logout", "Login")</li>
                         <li>@Html.ActionLink("Muokkaa tietojasi", "Edit", "Profile")</li>
                     }
-                    @if (Session["Permission"] != null && Session["Permission"].Equals(1))
-                    {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">Admin</a>
-                            <div class="dropdown-menu" style="">
-                                <ul class="dropdown-item">@Html.ActionLink("KÄYTTÄJÄT", "Index", "Users")</ul>
-                                <ul class="dropdown-item">@Html.ActionLink("OUNAUS", "Index", "Locations")</ul>
-                            </div>
-                        </li>
-                    }
                 </ul>
             </div>
         </div>
@@ -48,7 +38,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Ryhmä RY</p>
         </footer>
     </div>
 

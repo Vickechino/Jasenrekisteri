@@ -6,25 +6,22 @@
 
 
 <div>
-    <h3>Haluatko varmasti poistaa käyttäjän pysyvästi?</h3>
+    <h3>Haluatko varmasti poistaa jäsenen/käyttäjän?</h3>
+    <h4>Operaatiota ei voida perua.</h4>
     <hr />
-    <dl class="dl-horizontal">
-
-        <dt>
-            @Html.DisplayNameFor(model => model.username)
-        </dt>
+    <dl class="">
 
         <dd>
-            @Html.DisplayFor(model => model.username)
+            <h4>
+                Jäsenen nimi: @Html.DisplayFor(model => model.fullname)
+            </h4>
         </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.fullname)
-        </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.fullname)
+            <h4>
+                Käyttäjänimi: @Html.DisplayFor(model => model.username)
+            </h4>
         </dd>
+
 
 
     </dl>
