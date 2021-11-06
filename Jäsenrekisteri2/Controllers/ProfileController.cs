@@ -10,26 +10,24 @@ namespace Jäsenrekisteri2.Controllers
     public class ProfileController : Controller
     {
         JäsenrekisteriEntities db = new JäsenrekisteriEntities();
-        // EDIT NÄKYMÄN PALAUTUS
+        // OMIEN TIETOJEN EDIT NÄKYMÄN PALAUTUS
         public ActionResult Edit()
         {
             if (Session["Username"] == null) return RedirectToAction("Login", "Login");
-            var id = (Session["UserID"]);
-            Login currentUser = db.Logins.Find(id);
+            Login currentUser = db.Logins.Find(Session["UserID"]);
             if (currentUser == null) RedirectToAction("Index", "Home");
-            //ViewBag.RegionID = new SelectList(db.Region, "RegionID", "RegionDescription", X.RegionID);
-            if (Session["Username"] != null && Session["Permission"].ToString() == "1")
+            if (currentUser.member_id.ToString() == Session["UserID"].ToString())
             {
                 currentUser.password = "";
                 return View(currentUser);
             }
-            return View();
+            return RedirectToAction("Login", "Login");
         }
         [HttpPost] //Oman käyttäjän muokkaus
         [ValidateAntiForgeryToken] //Katso https://go.microsoft.com/fwlink/?LinkId=317598
         public ActionResult Edit([Bind(Include = "password, email, firstname, lastname, member_id, lastseen, joinDate, username")] Login editee)
         {
-            if (ModelState.IsValid && (Session["UserName"] != null))
+            if (ModelState.IsValid && Session["Username"].ToString() == db.Logins.Find(editee.member_id).username)
             {
                 try
                 {

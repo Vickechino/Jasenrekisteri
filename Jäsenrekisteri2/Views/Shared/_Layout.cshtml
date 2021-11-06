@@ -16,20 +16,19 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Ryhmä RY", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("Etusivu", "Index", "Home")</li>
                     @if (Session["UserName"] == null)
                     {
-                        <li>@Html.ActionLink("LOGIN", "Login", "Login")</li>
+                        <li>@Html.ActionLink("Kirjaudu sisään", "Login", "Login")</li>
                     }
                     else
                     {
-                        <li>@Html.ActionLink("LOGOUT", "Logout", "Login")</li>
-                        <li>@Html.ActionLink("EDIT PROFILE", "Edit", "Profile")</li>
-                        <li>@Html.ActionLink("ACTION2", "Return", "Loanx")</li>
+                        <li>@Html.ActionLink("Kirjaudu ulos", "Logout", "Login")</li>
+                        <li>@Html.ActionLink("Muokkaa tietojasi", "Edit", "Profile")</li>
                     }
                     @if (Session["Permission"] != null && Session["Permission"].Equals(1))
                     {

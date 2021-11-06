@@ -2,10 +2,10 @@
 @using Jäsenrekisteri2.Models;
 
 @{
-    ViewBag.Title = "JÄSENLISTA - YLPEÄT JÄSENEMME";
+    ViewBag.Title = "Jäsenlista - Ylpeät jäsenemme";
 }
 
-<h3>RYHMÄ RY - YLPEÄT JÄSENET</h3>
+<h3><b>Ryhmä RY - Ylpeät jäsenet</b></h3>
 
 
 <table class="table table-hover">
@@ -25,8 +25,9 @@
     {
         if (Session["Permission"] != null && Session["Permission"].Equals(1))
         {
-            <p>
-                @Html.ActionLink("LUO UUSI", "Create", "Login")
+            <p><b>
+    @Html.ActionLink("LUO UUSI", "Create", "Login")
+            </b>
             </p>
         }
         <tr>
