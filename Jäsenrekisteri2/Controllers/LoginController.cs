@@ -34,6 +34,11 @@ namespace Jäsenrekisteri2.Controllers
                     LoginModel.LoginMessage = "Käyttäjänimi ei voi olla tyhjä!";
                     return View("Login", LoginModel);
                 }
+                else if (LoginModel.password == null) 
+                {
+                    LoginModel.LoginMessage = "Salasana ei voi olla tyhjä!";
+                    return View("Login", LoginModel);
+                }
                 var bpassword = System.Text.Encoding.UTF8.GetBytes(LoginModel.password);
                 var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword);
                 LoginModel.password = Convert.ToBase64String(hash);
@@ -56,9 +61,9 @@ namespace Jäsenrekisteri2.Controllers
                     return View("Login", LoginModel);
                 }
             }
-            catch
+            catch (Exception e)
             {
-                LoginModel.LoginMessage = "Salasana ei voi olla tyhjä";
+                LoginModel.LoginMessage = e.ToString();
                 return View("Login", LoginModel);
             }
         }
