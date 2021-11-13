@@ -124,7 +124,7 @@ namespace Jäsenrekisteri2.Controllers
         }
         //Käyttäjän luominen
         [HttpPost]  
-        public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate")] Login newUser)
+        public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate, fullname")] Login newUser)
         {
             if (ModelState.IsValid && Session["UserName"] != null && Session["Permission"].ToString() == "1")
             {
@@ -140,6 +140,7 @@ namespace Jäsenrekisteri2.Controllers
                     var bpassword = System.Text.Encoding.UTF8.GetBytes(newUser.password);
                     var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword);
                     newUser.password = Convert.ToBase64String(hash);
+                    newUser.fullname = newUser.firstname + " " + newUser.lastname;
                     db.Logins.Add(newUser);
                     db.SaveChanges();
                     return RedirectToAction("Index");
@@ -179,7 +180,7 @@ namespace Jäsenrekisteri2.Controllers
         }
         [HttpPost] //Käyttäjän muokkaus
         [ValidateAntiForgeryToken] //Katso https://go.microsoft.com/fwlink/?LinkId=317598
-        public ActionResult Edit([Bind(Include = "username, password, email, firstname, lastname, admin, member_id, lastseen, joinDate")] Login editee)
+        public ActionResult Edit([Bind(Include = "username, password, email, firstname, lastname, admin, member_id, lastseen, joinDate, fullname")] Login editee)
         {
             if (ModelState.IsValid && (Session["UserName"] != null))
             {
@@ -202,6 +203,7 @@ namespace Jäsenrekisteri2.Controllers
                         editee.password = Convert.ToBase64String(hash);
                     }
                     var existingEntity = db.Logins.Find(editee.member_id);
+                    editee.fullname = editee.firstname + " " + editee.lastname;
                     db.Entry(existingEntity).CurrentValues.SetValues(editee);
                     db.SaveChanges();
                     return RedirectToAction("Index");

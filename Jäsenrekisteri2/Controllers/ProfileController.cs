@@ -22,7 +22,7 @@ namespace Jäsenrekisteri2.Controllers
         }
         [HttpPost] //Oman käyttäjän muokkaus
         [ValidateAntiForgeryToken] //Katso https://go.microsoft.com/fwlink/?LinkId=317598
-        public ActionResult Edit([Bind(Include = "password, email, firstname, lastname, member_id, lastseen, joinDate, username")] Login editee)
+        public ActionResult Edit([Bind(Include = "password, email, firstname, lastname, member_id, lastseen, joinDate, username, fullname")] Login editee)
         {
             if (ModelState.IsValid && Session["Username"].ToString() == db.Logins.Find(editee.member_id).username)
             {
@@ -42,6 +42,7 @@ namespace Jäsenrekisteri2.Controllers
                     editee.admin = db.Logins.Find(editee.member_id).admin;
                     editee.joinDate = db.Logins.Find(editee.member_id).joinDate;
                     var existingEntity = db.Logins.Find(editee.member_id);
+                    editee.fullname = editee.firstname + " " + editee.lastname;
                     db.Entry(existingEntity).CurrentValues.SetValues(editee);
                     db.SaveChanges();
                     return RedirectToAction("Index", "Home");

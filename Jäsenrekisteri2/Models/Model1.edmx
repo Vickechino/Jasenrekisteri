@@ -11,13 +11,14 @@
           </Key>
           <Property Name="member_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="username" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="email" Type="nvarchar" MaxLength="100" />
+          <Property Name="email" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="password" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="lastseen" Type="datetime" />
           <Property Name="admin" Type="int" />
-          <Property Name="firstname" Type="nvarchar" MaxLength="100" />
-          <Property Name="lastname" Type="nvarchar" MaxLength="100" />
-          <Property Name="joinDate" Type="datetime" />
+          <Property Name="firstname" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="lastname" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="joinDate" Type="datetime" Nullable="false" />
+          <Property Name="fullname" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityContainer Name="JäsenrekisteriModelStoreContainer">
           <EntitySet Name="Logins" EntityType="Self.Logins" Schema="dbo" store:Type="Tables" />
@@ -32,13 +33,14 @@
           </Key>
           <Property Name="member_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="username" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="password" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="lastseen" Type="DateTime" Precision="3" />
           <Property Name="admin" Type="Int32" />
-          <Property Name="firstname" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="lastname" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="joinDate" Type="DateTime" Precision="3" />
+          <Property Name="firstname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="lastname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="joinDate" Type="DateTime" Precision="3" Nullable="false" />
+          <Property Name="fullname" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityContainer Name="JäsenrekisteriEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Logins" EntityType="Self.Login" />
@@ -52,6 +54,7 @@
           <EntitySetMapping Name="Logins">
             <EntityTypeMapping TypeName="JäsenrekisteriModel.Login">
               <MappingFragment StoreEntitySet="Logins">
+                <ScalarProperty Name="fullname" ColumnName="fullname" />
                 <ScalarProperty Name="joinDate" ColumnName="joinDate" />
                 <ScalarProperty Name="member_id" ColumnName="member_id" />
                 <ScalarProperty Name="username" ColumnName="username" />

@@ -13,7 +13,7 @@
     {
         <tr>
             <th>
-                Nimi
+                @Html.ActionLink("Nimi", "Index", new { sortOrder = ViewBag.NameSortParm })
             </th>
             <th>
                 Liittynyt
@@ -85,7 +85,7 @@
     {
         <td>EI</td>
     }
-    @if (Session["Permission"] != null && Session["Permission"].Equals(1))
+    @if (Session["Permission"].Equals(1))
     {
         <td>
             @Html.ActionLink("Poista", "Delete", "Login", new { id = item.member_id }, null) |

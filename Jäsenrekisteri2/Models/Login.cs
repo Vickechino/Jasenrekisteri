@@ -19,12 +19,11 @@ namespace Jäsenrekisteri2.Models
         public string email { get; set; }
         public string password { get; set; }
         public Nullable<System.DateTime> lastseen { get; set; }
-        public Nullable<System.DateTime> joinDate { get; set; }
         public Nullable<int> admin { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
+        public System.DateTime joinDate { get; set; }
         public string fullname { get; set; }
         public string LoginMessage { get; set; }
-
     }
 }
