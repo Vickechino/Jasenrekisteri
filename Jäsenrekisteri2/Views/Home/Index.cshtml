@@ -16,7 +16,7 @@
                 @Html.ActionLink("Nimi", "Index", new { sortOrder = ViewBag.NameSortParm })
             </th>
             <th>
-                Liittynyt
+                @Html.ActionLink("Liittynt", "Index", new { sortOrder = ViewBag.DateSortParm })
             </th>
             <th>
         </tr>
@@ -32,17 +32,18 @@
         }
         <tr>
             <th>
-                Nimi
+                @Html.ActionLink("Nimi", "Index", new { sortOrder = ViewBag.NameSortParm })
             </th>
             <th>
-                Liittynyt
+                @Html.ActionLink("Liittynt", "Index", new { sortOrder = ViewBag.DateSortParm })
             </th>
             <th>
-                Sähköposti
+                @Html.ActionLink("Sähköposti", "Index", new { sortOrder = ViewBag.EmailSortParm })
             </th>
             <th>
-                Admin
+                @Html.ActionLink("Admin", "Index", new { sortOrder = ViewBag.AdminSortParm })
             </th>
+            <th>
         </tr>
     }
 

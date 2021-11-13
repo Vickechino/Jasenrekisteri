@@ -14,6 +14,8 @@ namespace Jäsenrekisteri2.Controllers
 
             ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.EmailSortParm = sortOrder ==  "email_desc" ? "email" : "email_desc";
+            ViewBag.AdminSortParm = sortOrder == "admin_desc" ? "admin" : "admin_desc";
             var members = from s in db.Logins
                            select s;
             switch (sortOrder)
@@ -25,10 +27,22 @@ namespace Jäsenrekisteri2.Controllers
                     members = members.OrderBy(s => s.joinDate);
                     break;
                 case "date_desc":
+                    members = members.OrderByDescending(s => s.joinDate);
+                    break;
+                case "admin":
+                    members = members.OrderBy(s => s.admin);
+                    break;
+                case "admin_desc":
                     members = members.OrderByDescending(s => s.admin);
                     break;
-                default:
+                case "email_desc":
+                    members = members.OrderByDescending(s => s.email);
+                    break;
+                case "email":
                     members = members.OrderBy(s => s.email);
+                    break;
+                default:
+                    members = members.OrderBy(s => s.fullname);
                     break;
             }
             foreach (var item in members)
@@ -39,26 +53,5 @@ namespace Jäsenrekisteri2.Controllers
             }
             return View(members.ToList());
         }
-        //        ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder)? "name_desc" : "";
-        //   ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-        //   var students = from s in db.Students
-        //                  select s;
-        //   switch (sortOrder)
-        //   {
-        //      case "name_desc":
-        //         students = students.OrderByDescending(s => s.LastName);
-        //         break;
-        //      case "Date":
-        //         students = students.OrderBy(s => s.EnrollmentDate);
-        //         break;
-        //      case "date_desc":
-        //         students = students.OrderByDescending(s => s.EnrollmentDate);
-        //         break;
-        //      default:
-        //         students = students.OrderBy(s => s.LastName);
-        //         break;
-        //   }
-        //   return View(students.ToList());
-        //}
     }
 }
