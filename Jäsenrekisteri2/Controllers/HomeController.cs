@@ -47,7 +47,6 @@ namespace Jäsenrekisteri2.Controllers
             }
             foreach (var item in members)
             {
-                //item.fullname = item.firstname + " " + item.lastname;
                 item.password = null;
                 item.username = null;
             }

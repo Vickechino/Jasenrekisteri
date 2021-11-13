@@ -48,8 +48,6 @@ namespace Jäsenrekisteri2.Controllers
                     Session["Username"] = LoggedUser.username;
                     Session["Permission"] = LoggedUser.admin;
                     Session["UserID"] = LoggedUser.member_id;
-                    Session["firstname"] = LoggedUser.firstname;
-                    Session["lastname"] = LoggedUser.lastname;
                     LoggedUser.lastseen = DateTime.Now;
                     db.Entry(LoggedUser).State = EntityState.Modified;
                     db.SaveChanges();
@@ -84,7 +82,6 @@ namespace Jäsenrekisteri2.Controllers
             if (chosenLogin == null) return RedirectToAction("Index", "Home");
             if (Session["Username"] != null && Session["Permission"].Equals(1))
             {
-                chosenLogin.fullname = chosenLogin.firstname + " " + chosenLogin.lastname;
                 return View(chosenLogin);
             }
             else return RedirectToAction("Index");
