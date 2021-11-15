@@ -23,6 +23,7 @@
                     <li>@Html.ActionLink("Etusivu", "Index", "Home")</li>
                     @if (Session["UserName"] == null)
                     {
+                        <li>@Html.ActionLink("Liity", "About", "Home")</li>
                         <li>@Html.ActionLink("Kirjaudu sisään", "Login", "Login")</li>
                     }
                     else

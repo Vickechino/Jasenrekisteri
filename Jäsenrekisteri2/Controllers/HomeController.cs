@@ -9,7 +9,12 @@ namespace Jäsenrekisteri2.Controllers
     {
         JäsenrekisteriEntities db = new JäsenrekisteriEntities();
 
-        public ActionResult Index(string sortOrder)
+        public ActionResult About() //About näkymän palautus
+        {
+            return View();
+        }
+
+        public ActionResult Index(string sortOrder) // Indexin/jäsenlistan näkymän palautus
         {
 
             ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
