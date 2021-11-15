@@ -179,7 +179,7 @@ namespace Jäsenrekisteri2.Controllers
         [ValidateAntiForgeryToken] //Katso https://go.microsoft.com/fwlink/?LinkId=317598
         public ActionResult Edit([Bind(Include = "username, password, email, firstname, lastname, admin, member_id, lastseen, joinDate, fullname")] Login editee)
         {
-            if (ModelState.IsValid && (Session["UserName"] != null))
+            if (ModelState.IsValid && Session["Permission"].Equals(1))
             {
                 var userNameAlreadyExists = db.Logins.Any(x => x.username == editee.username); //Katsotaan löytyykö samalla nimellä käyttäjää
                 if (userNameAlreadyExists && db.Logins.Find(editee.member_id).username != editee.username)
@@ -207,7 +207,7 @@ namespace Jäsenrekisteri2.Controllers
                 }
                 catch
                 {
-                    ViewBag.CreateUserError = "Error 2 käyttäjää muokattaessa, tarkista tiedot";
+                    ViewBag.CreateUserError = "Virhe käyttäjää muokattaessa, tarkista syötetyt tiedot";
                     return View();
                 }
                 finally
