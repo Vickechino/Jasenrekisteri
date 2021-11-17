@@ -33,7 +33,7 @@
         <div class="form-group">
             @Html.Label("Sähköposti", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control", @minlength="6", @maxlength = "50" } })
+                @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control", @minlength="6", @maxlength = "50", @type = "email" } })
                 @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
             </div>
         </div>
