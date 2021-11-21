@@ -4,21 +4,21 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="JäsenrekisteriModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl" Alias="Self" Namespace="JäsenrekisteriModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure">
         <EntityType Name="Logins">
           <Key>
             <PropertyRef Name="member_id" />
           </Key>
-          <Property Name="member_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="username" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="email" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="password" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="member_id" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+          <Property Name="username" Nullable="false" MaxLength="100" Type="nvarchar" />
+          <Property Name="email" Nullable="false" MaxLength="100" Type="nvarchar" />
+          <Property Name="password" Nullable="false" MaxLength="300" Type="nvarchar" />
           <Property Name="lastseen" Type="datetime" />
           <Property Name="admin" Type="int" />
-          <Property Name="firstname" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="lastname" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="joinDate" Type="datetime" Nullable="false" />
-          <Property Name="fullname" Type="nvarchar" MaxLength="100" />
+          <Property Name="firstname" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="lastname" Nullable="false" MaxLength="50" Type="nvarchar" />
+          <Property Name="joinDate" Nullable="false" Type="datetime" />
+          <Property Name="fullname" MaxLength="100" Type="nvarchar" />
         </EntityType>
         <EntityContainer Name="JäsenrekisteriModelStoreContainer">
           <EntitySet Name="Logins" EntityType="Self.Logins" Schema="dbo" store:Type="Tables" />
