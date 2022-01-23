@@ -222,4 +222,4 @@ namespace Jäsenrekisteri2.Controllers
             return View(User);
         }
     }
-}
+}             /*  DEVELOPED BY VICKECHINO ALL RIGHTS RESERVED FFS!*/
