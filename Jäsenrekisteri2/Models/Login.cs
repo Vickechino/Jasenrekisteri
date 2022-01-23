@@ -25,6 +25,7 @@ namespace Jäsenrekisteri2.Models
         public string lastname { get; set; }
         public Nullable<System.DateTime> joinDate { get; set; }
         public string fullname { get; set; }
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public string LoginMessage { get; set; }
     }
 }

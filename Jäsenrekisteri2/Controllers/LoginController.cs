@@ -9,6 +9,7 @@ namespace Jäsenrekisteri2.Controllers
 {
     public class LoginController : Controller
     {
+        private bool deleted;
         JäsenrekisteriEntities db = new JäsenrekisteriEntities();
         // GET: Login
         public ActionResult Index()
@@ -97,11 +98,14 @@ namespace Jäsenrekisteri2.Controllers
                     db.Logins.Remove(user);
                     db.SaveChanges();
                     if (Session["Username"].ToString() == user.username) { return RedirectToAction("Logout", "Login"); }
-                    return RedirectToAction("Index");
+                    ViewBag.ActionSuccess = "Käyttäjän: " + user.username + " poisto onnistui!";
+                    return View();
                 }
                 catch
                 {
+                    if (deleted == true) { return RedirectToAction("Index", "Home"); }
                     ViewBag.DeleteUserError = "Delete failed!";
+                    deleted = true;
                     return View();
                 }
 
@@ -202,11 +206,12 @@ namespace Jäsenrekisteri2.Controllers
                     editee.fullname = editee.firstname + " " + editee.lastname;
                     db.Entry(existingEntity).CurrentValues.SetValues(editee);
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    ViewBag.ActionSuccess = "Käyttäjän: " + editee.username + " muokkaus onnistui!";
+                    return View();
                 }
                 catch
                 {
-                    ViewBag.CreateUserError = "Virhe käyttäjää muokattaessa, tarkista syötetyt tiedot";
+                    ViewBag.CreateUserError = "Virhe käyttäjää muokattaessa, tarkista syötetyt tiedot!";
                     return View();
                 }
                 finally

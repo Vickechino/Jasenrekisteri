@@ -7,93 +7,93 @@
 
 <h3><b>Ryhmä RY - Ylpeät jäsenet</b></h3>
 
-
-<table class="table table-hover">
-    @if (Session["Username"] == null)
-    {
-        <tr>
-            <th>
-                @Html.ActionLink("Nimi", "Index", new { sortOrder = ViewBag.NameSortParm })
-            </th>
-            <th>
-                @Html.ActionLink("Liittynt", "Index", new { sortOrder = ViewBag.DateSortParm })
-            </th>
-            <th>
-        </tr>
-    }
-    @if (Session["Username"] != null)
-    {
-        if (Session["Permission"] != null && Session["Permission"].Equals(1))
+    <table class="table table-hover">
+        @if (Session["Username"] == null)
         {
-            <p><b>
-    @Html.ActionLink("LUO UUSI", "Create", "Login")
-            </b>
-            </p>
-        }
-        <tr>
-            <th>
-                @Html.ActionLink("Nimi", "Index", new { sortOrder = ViewBag.NameSortParm })
-            </th>
-            <th>
-                @Html.ActionLink("Liittynt", "Index", new { sortOrder = ViewBag.DateSortParm })
-            </th>
-            <th>
-                @Html.ActionLink("Sähköposti", "Index", new { sortOrder = ViewBag.EmailSortParm })
-            </th>
-            <th>
-                @Html.ActionLink("Admin", "Index", new { sortOrder = ViewBag.AdminSortParm })
-            </th>
-            <th>
-        </tr>
-    }
-
-    @foreach (var item in Model)
-    {
-        if (Session["Username"] == null)
-        {
-
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.fullname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.joinDate)
-                </td>
-                <td>
-                    @Html.ActionLink("Kirjaudu lisätietoja varten", "Login", "Login")
-                </td>
+                <th>
+                    @Html.ActionLink("Nimi", "Index", new { sortOrder = ViewBag.NameSortParm })
+                </th>
+                <th>
+                    @Html.ActionLink("Liittynt", "Index", new { sortOrder = ViewBag.DateSortParm })
+                </th>
+                <th>
             </tr>
         }
-        else if (Session["Username"] != null)
+        @if (Session["Username"] != null)
         {
-<tr>
-    <td>
-        @Html.DisplayFor(modelItem => item.fullname)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.joinDate)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.email)
-    </td>
-    @if (item.admin.Equals(1))
-    {
-        <td>KYLLÄ</td>
-
-    }
-    else
-    {
-        <td>EI</td>
-    }
-    @if (Session["Permission"] != null && Session["Permission"].Equals(1))
-    {
-        <td>
-            @Html.ActionLink("Poista", "Delete", "Login", new { id = item.member_id }, null) |
-            @Html.ActionLink("Muokkaa", "Edit", "Login", new { id = item.member_id }, null)
-        </td>
-}
-</tr>
+            if (Session["Permission"] != null && Session["Permission"].Equals(1))
+            {
+                <p>
+                    <b>
+                        @Html.ActionLink("LUO UUSI", "Create", "Login")
+                    </b>
+                </p>
+            }
+            <tr>
+                <th>
+                    @Html.ActionLink("Nimi", "Index", new { sortOrder = ViewBag.NameSortParm })
+                </th>
+                <th>
+                    @Html.ActionLink("Liittynt", "Index", new { sortOrder = ViewBag.DateSortParm })
+                </th>
+                <th>
+                    @Html.ActionLink("Sähköposti", "Index", new { sortOrder = ViewBag.EmailSortParm })
+                </th>
+                <th>
+                    @Html.ActionLink("Admin", "Index", new { sortOrder = ViewBag.AdminSortParm })
+                </th>
+                <th>
+            </tr>
         }
-    }
 
-</table>
+        @foreach (var item in Model)
+        {
+            if (Session["Username"] == null)
+            {
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.fullname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.joinDate)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Kirjaudu lisätietoja varten", "Login", "Login")
+                    </td>
+                </tr>
+            }
+            else if (Session["Username"] != null)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.fullname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.joinDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.email)
+                    </td>
+                    @if (item.admin.Equals(1))
+                    {
+                        <td>KYLLÄ</td>
+
+                    }
+                    else
+                    {
+                        <td>EI</td>
+                    }
+                    @if (Session["Permission"] != null && Session["Permission"].Equals(1))
+                    {
+                        <td>
+                            @Html.ActionLink("Poista", "Delete", "Login", new { id = item.member_id }, null) |
+                            @Html.ActionLink("Muokkaa", "Edit", "Login", new { id = item.member_id }, null)
+                        </td>
+                    }
+                </tr>
+            }
+        }
+
+    </table>
