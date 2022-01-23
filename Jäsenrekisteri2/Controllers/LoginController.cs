@@ -1,5 +1,6 @@
 ﻿using Jäsenrekisteri2.Models;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -27,8 +28,6 @@ namespace Jäsenrekisteri2.Controllers
         {
             try
             {
-
-
                 if (LoginModel.username == null)
                 {
                     LoginModel.LoginMessage = "Käyttäjänimi ei voi olla tyhjä!";
@@ -182,9 +181,9 @@ namespace Jäsenrekisteri2.Controllers
             if (ModelState.IsValid && Session["Permission"].Equals(1))
             {
                 var userNameAlreadyExists = db.Logins.Any(x => x.username == editee.username); //Katsotaan löytyykö samalla nimellä käyttäjää
-                if (userNameAlreadyExists && db.Logins.Find(editee.member_id).username != editee.username)
+                if (userNameAlreadyExists && db.Logins.Find(editee.member_id).username.ToLower() != editee.username.ToLower())
                 {
-                    ViewBag.CreateUserError = "Error 1 käyttäjää muokatessa, tarkista tiedot";
+                    ViewBag.CreateUserError = "Käyttäjänimi varattu!";
                     return View();
                 }
                 try

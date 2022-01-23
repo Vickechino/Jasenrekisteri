@@ -50,12 +50,17 @@ namespace Jäsenrekisteri2.Controllers
                     members = members.OrderBy(s => s.fullname);
                     break;
             }
-            foreach (var item in members)
+            try
             {
-                item.password = null;
-                item.username = null;
+                foreach (var item in members)
+                {
+                    item.password = null;
+                    item.username = null;
+                }
+                return View(members.ToList());
+                
             }
-            return View(members.ToList());
+            catch { return View("About"); }
         }
     }
 }

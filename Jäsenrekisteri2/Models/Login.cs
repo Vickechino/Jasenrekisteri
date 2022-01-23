@@ -11,7 +11,8 @@ namespace Jäsenrekisteri2.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Login
     {
         public int member_id { get; set; }
