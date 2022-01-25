@@ -2,9 +2,7 @@
 
 namespace MVCEmail.Models
 {
-    public class EmailFormModel
-    {
-        [Required]
-        public string Message { get; set; }
+    public class EmailFormModel {
+           public string Message { get; set; }
     }
 }

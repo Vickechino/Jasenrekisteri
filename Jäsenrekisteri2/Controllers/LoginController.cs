@@ -9,8 +9,8 @@ namespace Jäsenrekisteri2.Controllers
 {
     public class LoginController : Controller
     {
-        private bool deleted;
         JäsenrekisteriEntities db = new JäsenrekisteriEntities();
+        int i = 0;
         // GET: Login
         public ActionResult Index()
         {
@@ -103,12 +103,13 @@ namespace Jäsenrekisteri2.Controllers
                 }
                 catch
                 {
-                    if (deleted == true) { return RedirectToAction("Index", "Home"); }
+                    if (i < 1)
+                    {
+                    return RedirectToAction("Index", "Home"); }
                     ViewBag.DeleteUserError = "Delete failed!";
-                    deleted = true;
+                    i++;
                     return View();
                 }
-
             }
             else return RedirectToAction("Index");
         }
