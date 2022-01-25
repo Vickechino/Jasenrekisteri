@@ -134,6 +134,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\EmailFormModel.cs" />
     <Compile Include="Models\Login.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -211,6 +212,9 @@
     <Content Include="Views\Login\Create.cshtml" />
     <Content Include="Views\Login\Edit.cshtml" />
     <Content Include="Views\Profile\Edit.cshtml" />
+    <Content Include="Views\Home\Verify.cshtml" />
+    <Content Include="Views\Home\Sent.cshtml" />
+    <Content Include="Views\Home\EnterCode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

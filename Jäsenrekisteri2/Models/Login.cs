@@ -11,8 +11,7 @@ namespace Jäsenrekisteri2.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class Login
     {
         public int member_id { get; set; }
@@ -25,7 +24,9 @@ namespace Jäsenrekisteri2.Models
         public string lastname { get; set; }
         public Nullable<System.DateTime> joinDate { get; set; }
         public string fullname { get; set; }
-        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public Nullable<bool> emailVerified { get; set; }
+        public Nullable<int> verificationCode { get; set; }
+        public Nullable<System.DateTime> verificationEmailSent { get; set; }
         public string LoginMessage { get; set; }
     }
 }

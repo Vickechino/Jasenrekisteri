@@ -1,0 +1,41 @@
+﻿@model Jäsenrekisteri2.Models.Login
+
+@{
+    ViewBag.Title = "Sähköpostin varmistus";
+}
+
+<h2>Vahvista sähköposti</h2>
+
+@using (Html.BeginForm("VerifyEmail", "Home", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <hr />
+    <div class="form-group">
+        @Html.Label("Sähköpostin koodi", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.verificationCode, new { htmlAttributes = new { @class = "form-control", placeholder = "Koodi", @minlength = "2", @maxlength = "30" } })
+            @Html.ValidationMessageFor(model => model.verificationCode, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-lg-offset-2">
+        <label class="text-danger">
+            @Html.DisplayFor(model => model.LoginMessage)
+        </label>
+    </div>
+    <label class="text-danger">
+        @ViewBag.VerifyCodeError
+    </label>
+    <label class="text-success">
+        @ViewBag.VerifyCodeSuccess
+    </label>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value=Vahvista class="btn btn-default" />
+        </div>
+    </div>
+</div>
+
+}
+

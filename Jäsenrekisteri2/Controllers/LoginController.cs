@@ -23,7 +23,7 @@ namespace Jäsenrekisteri2.Controllers
             else return View();
         }
         
-        //Käyttäjän Sisäänkirjautuminen ALKAA TÄSTÄ
+        //Käyttäjän tunnistus ALKAA TÄSTÄ
         [HttpPost]
         public ActionResult Authorize([Bind(Include = "username, password")] Login LoginModel) 
         {
@@ -65,7 +65,7 @@ namespace Jäsenrekisteri2.Controllers
                 return View("Login", LoginModel);
             }
         }
-        //Käyttäjän Sisäänkirjautuminen LOPPUU TÄHÄN
+        //Käyttäjän tunnistus LOPPUU TÄHÄN
 
         //Käyttäjän Uloskirjautuminen
         public ActionResult LogOut() 
@@ -113,7 +113,7 @@ namespace Jäsenrekisteri2.Controllers
             else return RedirectToAction("Index");
         }
 
-        //käyttäjän Luonti näkymän palatus
+        //Käyttäjän Luonti näkymän palatus // CREATE
         public ActionResult Create() 
         {
             if (Session["UserName"] != null && Session["Permission"].Equals(1))
@@ -124,7 +124,7 @@ namespace Jäsenrekisteri2.Controllers
         }
         //Käyttäjän luominen
         [HttpPost]  
-        public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate, fullname")] Login newUser)
+        public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate, fullname, verificationCode")] Login newUser)
         {
             if (ModelState.IsValid && Session["UserName"] != null && Session["Permission"].ToString() == "1")
             {
@@ -136,6 +136,8 @@ namespace Jäsenrekisteri2.Controllers
                 }
                 try
                 {
+                    System.Random random = new System.Random();
+                    newUser.verificationCode = random.Next(100000, 2147483647);
                     newUser.joinDate = DateTime.Now;
                     var bpassword = System.Text.Encoding.UTF8.GetBytes(newUser.password);
                     var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword);
