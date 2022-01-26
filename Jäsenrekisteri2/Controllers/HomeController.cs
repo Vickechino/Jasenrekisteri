@@ -12,7 +12,6 @@ namespace Jäsenrekisteri2.Controllers
     public class HomeController : Controller
     {
         JäsenrekisteriEntities db = new JäsenrekisteriEntities();
-        int i = 0;
 
         public ActionResult About() //About näkymän palautus
         {
@@ -68,11 +67,47 @@ namespace Jäsenrekisteri2.Controllers
             catch { return View("About"); }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Verify(EmailFormModel model)
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Verify(EmailFormModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var code = db.Logins.Find(Session["UserID"]).verificationCode; //Etsitään tietokannasta oikea koodi
+        //        var body = "Your account activation code is: "; //Viestin body
+        //        var message = new MailMessage();
+        //        message.To.Add(new MailAddress(db.Logins.Find(Session["UserID"]).email)); //Tässä asetetaan sähköpostin vastaanottaja
+        //        message.From = new MailAddress("victor.alm@student.careeria.fi");
+        //        message.Subject = "Your account activation code";
+        //        message.Body = string.Format(body + code); //Asetetaan viestin sisältö
+        //        message.IsBodyHtml = true;
+
+        //        using (var smtp = new SmtpClient())
+        //        {
+        //            var credential = new NetworkCredential
+        //            {
+        //                UserName = "victor.alm@student.careeria.fi",
+        //                Password = "IGJ-qgv-124" 
+        //            };
+        //            smtp.Credentials = credential;
+        //            smtp.Host = "smtp-mail.outlook.com";
+        //            smtp.Port = 587;
+        //            smtp.EnableSsl = true;
+        //            await smtp.SendMailAsync(message);
+        //            return RedirectToAction("EnterCode");
+        //        }
+        //    }
+        //    return View(model);
+        //}
+        //public ActionResult Verify()
+        //{
+        //    if (db.Logins.Find(Session["UserID"]).emailVerified == false)
+        //    return View();
+        //    else return RedirectToAction("Home, Index");
+        //}
+        public async Task<ActionResult> EnterCode(EmailFormModel model)
         {
-            if (ModelState.IsValid)
+            if (Session["emailVerified"].ToString() == "True") return RedirectToAction("Index");
             {
                 var code = db.Logins.Find(Session["UserID"]).verificationCode; //Etsitään tietokannasta oikea koodi
                 var body = "Your account activation code is: "; //Viestin body
@@ -88,37 +123,23 @@ namespace Jäsenrekisteri2.Controllers
                     var credential = new NetworkCredential
                     {
                         UserName = "victor.alm@student.careeria.fi",
-                        Password = "IGJ-qgv-124" 
+                        Password = "IGJ-qgv-124"
                     };
                     smtp.Credentials = credential;
                     smtp.Host = "smtp-mail.outlook.com";
                     smtp.Port = 587;
                     smtp.EnableSsl = true;
                     await smtp.SendMailAsync(message);
-                    return RedirectToAction("EnterCode");
+                    return View();
                 }
             }
-            return View(model);
-        }
-        public ActionResult Sent()
-        {
-            return View();
-        }
-        public ActionResult Verify()
-        {
-            if (db.Logins.Find(Session["UserID"]).emailVerified == false)
-            return View();
-            else return RedirectToAction("Home, Index");
-        }
-        public ActionResult EnterCode()
-        {
-            return View();
         }
         [HttpPost]
         public ActionResult VerifyEmail([Bind(Include = "VerificationCode")] Login LoginModel)
         {
             try
             {
+                if (Session["emailVerified"].ToString() == "True") return RedirectToAction("Index");
                 var theCode = db.Logins.Find(Session["UserID"]).verificationCode;
                 if (theCode == LoginModel.verificationCode)
                 {
@@ -126,6 +147,7 @@ namespace Jäsenrekisteri2.Controllers
                     existingEntity.emailVerified = true;
                     db.Entry(existingEntity).CurrentValues.SetValues(existingEntity);
                     db.SaveChanges();
+                    Session["emailVerified"] = true;
                     ViewBag.VerifyCodeSuccess = "Sähköposti vahvistettu!";
                     return View("EnterCode", LoginModel);
                 }

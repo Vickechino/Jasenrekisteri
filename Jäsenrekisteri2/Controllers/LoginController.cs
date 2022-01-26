@@ -48,6 +48,7 @@ namespace Jäsenrekisteri2.Controllers
                     Session["Username"] = LoggedUser.username;
                     Session["Permission"] = LoggedUser.admin;
                     Session["UserID"] = LoggedUser.member_id;
+                    Session["emailVerified"] = LoggedUser.emailVerified.ToString();
                     LoggedUser.lastseen = DateTime.Now;
                     db.Entry(LoggedUser).State = EntityState.Modified;
                     db.SaveChanges();
@@ -114,7 +115,7 @@ namespace Jäsenrekisteri2.Controllers
             else return RedirectToAction("Index");
         }
 
-        //Käyttäjän Luonti näkymän palatus // CREATE
+        //Käyttäjän Luonti näkymän palatus
         public ActionResult Create() 
         {
             if (Session["UserName"] != null && Session["Permission"].Equals(1))
@@ -125,7 +126,7 @@ namespace Jäsenrekisteri2.Controllers
         }
         //Käyttäjän luominen
         [HttpPost]  
-        public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate, fullname, verificationCode")] Login newUser)
+        public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate, fullname, emailVerified, verificationCode")] Login newUser)
         {
             if (ModelState.IsValid && Session["UserName"] != null && Session["Permission"].ToString() == "1")
             {
@@ -138,6 +139,7 @@ namespace Jäsenrekisteri2.Controllers
                 try
                 {
                     System.Random random = new System.Random();
+                    newUser.emailVerified = false;
                     newUser.verificationCode = random.Next(100000, 2147483647);
                     newUser.joinDate = DateTime.Now;
                     var bpassword = System.Text.Encoding.UTF8.GetBytes(newUser.password);
