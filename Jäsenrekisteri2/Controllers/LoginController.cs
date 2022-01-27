@@ -138,9 +138,9 @@ namespace Jäsenrekisteri2.Controllers
                 }
                 try
                 {
-                    System.Random random = new System.Random();
                     newUser.emailVerified = false;
-                    newUser.verificationCode = random.Next(100000, 2147483647);
+                    //System.Random random = new System.Random();
+                    //newUser.verificationCode = random.Next(100000, 2147483647);
                     newUser.joinDate = DateTime.Now;
                     var bpassword = System.Text.Encoding.UTF8.GetBytes(newUser.password);
                     var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword);
