@@ -56,11 +56,11 @@ namespace Jäsenrekisteri2.Controllers
             }
             try
             {
-                foreach (var item in members)
-                {
-                    item.password = null;
-                    item.username = null;
-                }
+                //foreach (var item in members)
+                //{
+                //    item.password = null;
+                //    item.username = null;
+                //}
                 return View(members.ToList());
 
             }
@@ -75,17 +75,18 @@ namespace Jäsenrekisteri2.Controllers
             {
                 Login user = db.Logins.Find(Session["UserID"]);
                 System.Random random = new System.Random();
-                user.verificationCode = random.Next(100000, 2147483647);
+                //user.verificationCode = random.Next(100000, 2147483647);
                 user.verificationEmailSent = System.DateTime.Now;
                 db.Entry(user).CurrentValues.SetValues(user);
                 db.SaveChanges();
-                var code = user.verificationCode;
+                //var code = user.verificationCode;
+                user.VerCode = random.Next(100000, 2147483647);
                 var body = "Your account activation code is: "; //Viestin body
                 var message = new MailMessage();
                 message.To.Add(new MailAddress(db.Logins.Find(Session["UserID"]).email)); //Tässä asetetaan sähköpostin vastaanottaja
                 message.From = new MailAddress("victor.alm@student.careeria.fi");
                 message.Subject = "Your account activation code";
-                message.Body = string.Format(body + code); //Asetetaan viestin sisältö
+                message.Body = string.Format(body + user.VerCode); //Asetetaan viestin sisältö
                 message.IsBodyHtml = true;
 
                 using (var smtp = new SmtpClient())
@@ -110,8 +111,8 @@ namespace Jäsenrekisteri2.Controllers
             try
             {
                 if (Session["emailVerified"].ToString() == "True") return RedirectToAction("Index");
-                var theCode = db.Logins.Find(Session["UserID"]).verificationCode;
-                if (theCode == LoginModel.verificationCode)
+                //var theCode = db.Logins.Find(Session["UserID"]).verificationCode;
+                if (db.Logins.Find(Session["UserID"]).VerCode == LoginModel.verificationCode); /** Oikealla puolella on käyttäjän syöte **/
                 {
                     var existingEntity = db.Logins.Find(Session["UserID"]);
                     existingEntity.emailVerified = true;
