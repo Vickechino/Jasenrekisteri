@@ -28,6 +28,6 @@ namespace Jäsenrekisteri2.Models
         public Nullable<int> verificationCode { get; set; }
         public Nullable<System.DateTime> verificationEmailSent { get; set; }
         public string LoginMessage { get; set; }
-        public int VerCode { get; set; }
+        internal int VerCode { get; set; }
     }
 }

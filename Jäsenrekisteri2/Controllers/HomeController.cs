@@ -70,17 +70,16 @@ namespace Jäsenrekisteri2.Controllers
         //Sähköpostin varmistus koodin luominen, Lähettäminen sähköpostiin, sekä näkymän palautus. HUOM! Itse koodin tarkistus tapahtuu alapuolella)
         public async Task<ActionResult> EnterCode(EmailFormModel model)
         {
-            if (Session["emailVerified"].ToString() == "True") return RedirectToAction("Index");
-            else if (Session ==  null) return RedirectToAction("Index");
+            if (Session["emailVerified"].ToString() == "True" || Session == null) return RedirectToAction("Index");
             {
                 Login user = db.Logins.Find(Session["UserID"]);
                 System.Random random = new System.Random();
                 //user.verificationCode = random.Next(100000, 2147483647);
                 user.verificationEmailSent = System.DateTime.Now;
+                user.VerCode = random.Next(100000, 2147483647);
                 db.Entry(user).CurrentValues.SetValues(user);
                 db.SaveChanges();
                 //var code = user.verificationCode;
-                user.VerCode = random.Next(100000, 2147483647);
                 var body = "Your account activation code is: "; //Viestin body
                 var message = new MailMessage();
                 message.To.Add(new MailAddress(db.Logins.Find(Session["UserID"]).email)); //Tässä asetetaan sähköpostin vastaanottaja
@@ -101,18 +100,20 @@ namespace Jäsenrekisteri2.Controllers
                     smtp.Port = 587;
                     smtp.EnableSsl = true;
                     await smtp.SendMailAsync(message);
+                    (Session["VerCode"]) = user.VerCode.ToString();
                     return View();
                 }
             }
         }
-        [HttpPost]  //Tästä alkaa sähköposti osoitteen var
+        [HttpPost]  //Tästä alkaa sähköposti osoitteen varmistus
         public ActionResult VerifyEmail([Bind(Include = "VerificationCode")] Login LoginModel)
         {
             try
             {
-                if (Session["emailVerified"].ToString() == "True") return RedirectToAction("Index");
-                //var theCode = db.Logins.Find(Session["UserID"]).verificationCode;
-                if (db.Logins.Find(Session["UserID"]).VerCode == LoginModel.verificationCode); /** Oikealla puolella on käyttäjän syöte **/
+                if (Session["emailVerified"].ToString() == "True") return RedirectToAction("Index"); /** Palautetaan index jos sähköposti osoite on jo vahvistettu **/
+                Login user = db.Logins.Find(Session["UserID"]);
+
+                if (Session["VerCode"].ToString() == LoginModel.verificationCode.ToString()) /*Verrataan koodia käyttäjän syötteeseen*//** Oikealla puolella on käyttäjän syöte **/
                 {
                     var existingEntity = db.Logins.Find(Session["UserID"]);
                     existingEntity.emailVerified = true;
@@ -122,14 +123,15 @@ namespace Jäsenrekisteri2.Controllers
                     ViewBag.VerifyCodeSuccess = "Sähköposti vahvistettu!";
                     return View("EnterCode", LoginModel);
                 }
+                ViewBag.VerifyCodeError = "Virheellinen koodi!";
+                return View("EnterCode", LoginModel);
             }
             catch
             {
                 ViewBag.VerifyCodeError = "Virhe!";
                 return View("EnterCode", LoginModel);
             }
-            ViewBag.VerifyCodeError = "Virheellinen koodi!";
-            return View("EnterCode", LoginModel);
+
         }
     }
 }
