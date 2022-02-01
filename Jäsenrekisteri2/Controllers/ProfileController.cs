@@ -22,7 +22,7 @@ namespace Jäsenrekisteri2.Controllers
         }
         [HttpPost] //Oman käyttäjän muokkaus
         [ValidateAntiForgeryToken] //Katso https://go.microsoft.com/fwlink/?LinkId=317598
-        public ActionResult Edit([Bind(Include = "currentPassword, confirmPassword, password, email, firstname, lastname, member_id, lastseen, joinDate, username, fullname")] Login editee)
+        public ActionResult Edit([Bind(Include = "currentPassword, confirmPassword, password, email, firstname, lastname, member_id, lastseen, joinDate, username, fullname, emailVerified")] Login editee)
         {
             if (ModelState.IsValid && Session["Username"].ToString() == db.Logins.Find(editee.member_id).username)
             {
@@ -49,7 +49,9 @@ namespace Jäsenrekisteri2.Controllers
                     var newpassword = System.Text.Encoding.UTF8.GetBytes(editee.confirmPassword);
                     var newhash = System.Security.Cryptography.MD5.Create().ComputeHash(newpassword);
                     editee.password = Convert.ToBase64String(newhash);
-                    if (editee.email != db.Logins.Find(editee.member_id).email) editee.emailVerified = false; //Asetetaan sähköpostin vahvistus booleani falseksi jos osoite vaihdetaan
+                    if (editee.email.ToString().ToLower() != db.Logins.Find(editee.member_id).email.ToString().ToLower())
+                    editee.emailVerified = false;  //Asetetaan sähköpostin vahvistus booleani falseksi jos osoite vaihdetaan
+                    else editee.emailVerified = db.Logins.Find(editee.member_id).emailVerified; //Muutoin haetaan & käytetään vanhaa arvoa
                     editee.username = db.Logins.Find(editee.member_id).username;
                     editee.admin = db.Logins.Find(editee.member_id).admin;
                     editee.joinDate = db.Logins.Find(editee.member_id).joinDate;
