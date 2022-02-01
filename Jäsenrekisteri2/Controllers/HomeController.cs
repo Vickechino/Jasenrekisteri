@@ -6,6 +6,7 @@ using MVCEmail.Models;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using System;
 
 namespace Jäsenrekisteri2.Controllers
 {
@@ -67,42 +68,37 @@ namespace Jäsenrekisteri2.Controllers
             catch { return View("About"); }
         }
 
-        //Sähköpostin varmistus koodin luominen, Lähettäminen sähköpostiin, sekä näkymän palautus. HUOM! Itse koodin tarkistus tapahtuu alapuolella)
-        public async Task<ActionResult> EnterCode(EmailFormModel model)
-        {
-            if (Session["emailVerified"].ToString() == "True" || Session == null) return RedirectToAction("Index");
-            {
-                Login user = db.Logins.Find(Session["UserID"]);
-                System.Random random = new System.Random();
-                //user.verificationCode = random.Next(100000, 2147483647);
-                user.verificationEmailSent = System.DateTime.Now;
-                user.VerCode = random.Next(100000, 2147483647);
-                db.Entry(user).CurrentValues.SetValues(user);
-                db.SaveChanges();
-                //var code = user.verificationCode;
-                var body = "Your account activation code is: "; //Viestin body
-                var message = new MailMessage();
-                message.To.Add(new MailAddress(db.Logins.Find(Session["UserID"]).email)); //Tässä asetetaan sähköpostin vastaanottaja
-                message.From = new MailAddress("victor.alm@student.careeria.fi");
-                message.Subject = "Your account activation code";
-                message.Body = string.Format(body + user.VerCode); //Asetetaan viestin sisältö
-                message.IsBodyHtml = true;
 
-                using (var smtp = new SmtpClient())
+        public async Task<ActionResult> EnterCode(EmailFormModel model)//Sähköpostin varmistus koodin luonti, sähköpostittaminen ja varmistus näkymän palautus.
+        {
+            try
+            {
+                if (Session["emailVerified"].ToString() == "True" || (Session == null)) return RedirectToAction("Index");
                 {
-                    var credential = new NetworkCredential
+                    Login user = db.Logins.Find(Session["UserID"]);
+                    if (user.verificationEmailSent == null || DateTime.Now.AddMinutes(-5) > user.verificationEmailSent.Value)
                     {
-                        UserName = "victor.alm@student.careeria.fi",
-                        Password = "IGJ-qgv-124"
-                    };
-                    smtp.Credentials = credential;
-                    smtp.Host = "smtp-mail.outlook.com";
-                    smtp.Port = 587;
-                    smtp.EnableSsl = true;
-                    await smtp.SendMailAsync(message);
-                    (Session["VerCode"]) = user.VerCode.ToString();
+                        System.Random random = new System.Random();
+                        user.verificationEmailSent = System.DateTime.Now;
+                        user.verificationCode = random.Next(100000, 2147483647);
+                        (Session["VerCode"]) = user.verificationCode;
+                        db.Entry(user).CurrentValues.SetValues(user);
+                        db.SaveChanges();
+                        var body = "Hei, " + (Session["Name"]) + "!" + " Aktivointikoodisi on: "; //Viestin body
+                        var message = new MailMessage();
+                        message.To.Add(new MailAddress(db.Logins.Find(Session["UserID"]).email)); //Sähköpostin vastaanottaja
+                        message.Subject = "RYHMA RY, AKTIVOINTKOODI";
+                        message.Body = string.Format(body + user.verificationCode); //Asetetaan viestin sisältö
+                        message.IsBodyHtml = true;
+                        using (var smtp = new SmtpClient())
+                            await smtp.SendMailAsync(message);
+                    }
                     return View();
                 }
+            }
+            catch
+            {
+                return RedirectToAction("Index");
             }
         }
         [HttpPost]  //Tästä alkaa sähköposti osoitteen varmistus

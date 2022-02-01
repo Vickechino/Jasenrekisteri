@@ -31,12 +31,12 @@ namespace Jäsenrekisteri2.Controllers
             {
                 if (LoginModel.username == null)
                 {
-                    LoginModel.LoginMessage = "Käyttäjänimi ei voi olla tyhjä!";
+                    ViewBag.Error = "Käyttäjänimi ei voi olla tyhjä!";
                     return View("Login", LoginModel);
                 }
                 else if (LoginModel.password == null) 
                 {
-                    LoginModel.LoginMessage = "Salasana ei voi olla tyhjä!";
+                    ViewBag.Error = "Salasana ei voi olla tyhjä!";
                     return View("Login", LoginModel);
                 }
                 var bpassword = System.Text.Encoding.UTF8.GetBytes(LoginModel.password);
@@ -46,6 +46,7 @@ namespace Jäsenrekisteri2.Controllers
                 if (LoggedUser != null)
                 {
                     Session["Username"] = LoggedUser.username;
+                    Session["Name"] = LoggedUser.firstname;
                     Session["Permission"] = LoggedUser.admin;
                     Session["UserID"] = LoggedUser.member_id;
                     Session["emailVerified"] = LoggedUser.emailVerified.ToString();
@@ -56,13 +57,13 @@ namespace Jäsenrekisteri2.Controllers
                 }
                 else
                 {
-                    LoginModel.LoginMessage = "Virheellinen käyttäjätunnus/salasana";
+                    ViewBag.Error = "Virheellinen käyttäjätunnus/salasana";
                     return View("Login", LoginModel);
                 }
             }
             catch (Exception e)
             {
-                LoginModel.LoginMessage = e.ToString();
+                ViewBag.Error = e.ToString();
                 return View("Login", LoginModel);
             }
         }
