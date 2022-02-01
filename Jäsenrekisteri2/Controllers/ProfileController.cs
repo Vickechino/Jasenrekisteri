@@ -28,15 +28,20 @@ namespace Jäsenrekisteri2.Controllers
             {
                 try
                 {
-                    var bpassword = System.Text.Encoding.UTF8.GetBytes(editee.currentPassword);
-                    var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword);
-                    var theString = Convert.ToBase64String(hash);
-                    if (theString != db.Logins.Find(Session["UserID"]).password) 
+                    var bpassword = System.Text.Encoding.UTF8.GetBytes(editee.currentPassword); //Valmistellaan käyttäjän syöte hashausta varten
+                    var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword); //Luodaan syötteestä hash
+                    var theString = Convert.ToBase64String(hash); //Luodaan hashista stringi
+                    if (theString != db.Logins.Find(Session["UserID"]).password)
                     {
                         ViewBag.EditProfileError = "Väärä salasana!";
                         return View();
                     }
-                        if (editee.password != editee.confirmPassword)
+                    if (editee.password == null) //Jos uutta salasanaa ei ole asetettu, käytetään vanhaa
+                    {
+                        editee.password = editee.currentPassword;
+                        editee.confirmPassword = editee.currentPassword;
+                    }
+                    if (editee.password != editee.confirmPassword)
                         {
                             ViewBag.EditProfileError = "Salasanat eivät täsmää!";
                             return View();
