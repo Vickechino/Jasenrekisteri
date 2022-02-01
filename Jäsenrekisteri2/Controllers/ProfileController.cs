@@ -22,27 +22,28 @@ namespace Jäsenrekisteri2.Controllers
         }
         [HttpPost] //Oman käyttäjän muokkaus
         [ValidateAntiForgeryToken] //Katso https://go.microsoft.com/fwlink/?LinkId=317598
-        public ActionResult Edit([Bind(Include = "confirmPassword, password, email, firstname, lastname, member_id, lastseen, joinDate, username, fullname")] Login editee)
+        public ActionResult Edit([Bind(Include = "currentPassword, confirmPassword, password, email, firstname, lastname, member_id, lastseen, joinDate, username, fullname")] Login editee)
         {
             if (ModelState.IsValid && Session["Username"].ToString() == db.Logins.Find(editee.member_id).username)
             {
                 try
                 {
-                    if (editee.password == null)
+                    var bpassword = System.Text.Encoding.UTF8.GetBytes(editee.currentPassword);
+                    var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword);
+                    var theString = Convert.ToBase64String(hash);
+                    if (theString != db.Logins.Find(Session["UserID"]).password) 
                     {
-                        editee.password = db.Logins.Find(editee.member_id).password; //Salasana kenttä on tyhjä, haetaan nykyinen tietokannasta, eikä hashata.
+                        ViewBag.EditProfileError = "Väärä salasana!";
+                        return View();
                     }
-                    else
-                    {
                         if (editee.password != editee.confirmPassword)
                         {
                             ViewBag.EditProfileError = "Salasanat eivät täsmää!";
                             return View();
                         }
-                        var bpassword = System.Text.Encoding.UTF8.GetBytes(editee.password);
-                        var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword); //Muussa tapauksessa syötetty salasana hashataan ennen tiedon talletusta.
-                        editee.password = Convert.ToBase64String(hash);
-                    }
+                    var newpassword = System.Text.Encoding.UTF8.GetBytes(editee.confirmPassword);
+                    var newhash = System.Security.Cryptography.MD5.Create().ComputeHash(newpassword);
+                    editee.password = Convert.ToBase64String(newhash);
                     if (editee.email != db.Logins.Find(editee.member_id).email) editee.emailVerified = false; //Asetetaan sähköpostin vahvistus booleani falseksi jos osoite vaihdetaan
                     editee.username = db.Logins.Find(editee.member_id).username;
                     editee.admin = db.Logins.Find(editee.member_id).admin;
