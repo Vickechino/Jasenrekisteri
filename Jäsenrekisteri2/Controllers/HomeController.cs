@@ -126,7 +126,6 @@ namespace Jäsenrekisteri2.Controllers
                 ViewBag.VerifyCodeError = "Virhe!";
                 return View("EnterCode", LoginModel);
             }
-
         }
     }
 }

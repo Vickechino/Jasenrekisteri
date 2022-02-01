@@ -38,6 +38,7 @@ namespace Jäsenrekisteri2.Controllers
                         var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword); //Muussa tapauksessa syötetty salasana hashataan ennen tiedon talletusta.
                         editee.password = Convert.ToBase64String(hash);
                     }
+                    if (editee.email != db.Logins.Find(editee.member_id).email) editee.emailVerified = false; //Asetetaan sähköpostin vahvistus booleani falseksi jos osoite vaihdetaan
                     editee.username = db.Logins.Find(editee.member_id).username;
                     editee.admin = db.Logins.Find(editee.member_id).admin;
                     editee.joinDate = db.Logins.Find(editee.member_id).joinDate;
@@ -49,7 +50,7 @@ namespace Jäsenrekisteri2.Controllers
                 }
                 catch
                 {
-                    ViewBag.CreateUserError = "Error 2 käyttäjääsi muokattaessa, tarkista tiedot";
+                    ViewBag.CreateUserError = "Error käyttäjääsi muokattaessa, tarkista tiedot";
                     return View();
                 }
                 finally
