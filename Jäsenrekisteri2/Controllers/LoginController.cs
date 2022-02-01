@@ -53,6 +53,7 @@ namespace Jäsenrekisteri2.Controllers
                     LoggedUser.lastseen = DateTime.Now;
                     db.Entry(LoggedUser).State = EntityState.Modified;
                     db.SaveChanges();
+                    if (Session["emailVerified"] == null || Session["emailVerified"].ToString() == "False") return RedirectToAction("EnterCode", "Home");
                     return RedirectToAction("Index", "Home");
                 }
                 else

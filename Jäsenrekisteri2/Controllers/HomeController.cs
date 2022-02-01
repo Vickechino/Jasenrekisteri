@@ -119,11 +119,12 @@ namespace Jäsenrekisteri2.Controllers
                     return View("EnterCode", LoginModel);
                 }
                 ViewBag.VerifyCodeError = "Virheellinen koodi!";
+
                 return View("EnterCode", LoginModel);
             }
             catch
             {
-                ViewBag.VerifyCodeError = "Virhe!";
+                ViewBag.VerifyCodeError = "Virhe yritä uudelleen myöhemmin!";
                 return View("EnterCode", LoginModel);
             }
         }
