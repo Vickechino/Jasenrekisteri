@@ -80,15 +80,14 @@ namespace Jäsenrekisteri2.Controllers
                     {
                         System.Random random = new System.Random();
                         user.verificationEmailSent = System.DateTime.Now;
-                        user.verificationCode = random.Next(100000, 2147483647);
-                        (Session["VerCode"]) = user.verificationCode;
+                        (Session["VerCode"]) = random.Next(100000, 2147483647);
                         db.Entry(user).CurrentValues.SetValues(user);
                         db.SaveChanges();
                         var body = "Hei, " + (Session["Name"]) + "!" + " Aktivointikoodisi on: "; //Viestin body
                         var message = new MailMessage();
                         message.To.Add(new MailAddress(db.Logins.Find(Session["UserID"]).email)); //Sähköpostin vastaanottaja
                         message.Subject = "RYHMA RY, AKTIVOINTKOODI";
-                        message.Body = string.Format(body + user.verificationCode); //Asetetaan viestin sisältö
+                        message.Body = string.Format(body + (Session["VerCode"])); //Asetetaan viestin sisältö
                         message.IsBodyHtml = true;
                         using (var smtp = new SmtpClient())
                             await smtp.SendMailAsync(message);

@@ -45,7 +45,6 @@
           <Property Name="joinDate" Type="DateTime" Precision="3" />
           <Property Name="fullname" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="emailVerified" Type="Boolean" />
-          <Property Name="verificationCode" Type="Int32" />
           <Property Name="verificationEmailSent" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityContainer Name="JäsenrekisteriEntities" annotation:LazyLoadingEnabled="true">
@@ -61,7 +60,6 @@
             <EntityTypeMapping TypeName="JäsenrekisteriModel.Login">
               <MappingFragment StoreEntitySet="Logins">
                 <ScalarProperty Name="verificationEmailSent" ColumnName="verificationEmailSent" />
-                <ScalarProperty Name="verificationCode" ColumnName="verificationCode" />
                 <ScalarProperty Name="emailVerified" ColumnName="emailVerified" />
                 <ScalarProperty Name="fullname" ColumnName="fullname" />
                 <ScalarProperty Name="joinDate" ColumnName="joinDate" />

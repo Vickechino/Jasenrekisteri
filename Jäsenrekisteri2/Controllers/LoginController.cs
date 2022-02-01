@@ -127,7 +127,7 @@ namespace Jäsenrekisteri2.Controllers
         }
         //Käyttäjän luominen
         [HttpPost]  
-        public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate, fullname, emailVerified, verificationCode")] Login newUser)
+        public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate, fullname, emailVerified")] Login newUser)
         {
             if (ModelState.IsValid && Session["UserName"] != null && Session["Permission"].ToString() == "1")
             {
