@@ -67,8 +67,8 @@ namespace Jäsenrekisteri2.Controllers
                 ViewBag.Error = e.ToString();
                 return View("Login", LoginModel);
             }
-        }
-        //Käyttäjän tunnistus LOPPUU TÄHÄN
+        }//** Käyttäjän tunnistus LOPPUU **
+
 
         //Käyttäjän Uloskirjautuminen
         public ActionResult LogOut() 
@@ -187,7 +187,7 @@ namespace Jäsenrekisteri2.Controllers
         }
         [HttpPost] //Käyttäjän muokkaus
         [ValidateAntiForgeryToken] //Katso https://go.microsoft.com/fwlink/?LinkId=317598
-        public ActionResult Edit([Bind(Include = "username, password, email, firstname, lastname, admin, member_id, lastseen, joinDate, fullname")] Login editee)
+        public ActionResult Edit([Bind(Include = "username, password, email, firstname, lastname, admin, member_id, lastseen, joinDate, fullname, confirmPassword")] Login editee)
         {
             if (ModelState.IsValid && Session["Permission"].Equals(1))
             {
@@ -205,6 +205,11 @@ namespace Jäsenrekisteri2.Controllers
                     }
                     else
                     {
+                        if (editee.password != editee.confirmPassword)
+                        {
+                            ViewBag.EditUserError = "Salasanat eivät täsmää!";
+                            return View();
+                        }
                         var bpassword = System.Text.Encoding.UTF8.GetBytes(editee.password);
                         var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword); //Muussa tapauksessa syötetty salasana hashataan ennen tiedon talletusta.
                         editee.password = Convert.ToBase64String(hash);
@@ -218,7 +223,7 @@ namespace Jäsenrekisteri2.Controllers
                 }
                 catch
                 {
-                    ViewBag.CreateUserError = "Virhe käyttäjää muokattaessa, tarkista syötetyt tiedot!";
+                    ViewBag.EditUserError = "Virhe käyttäjää muokattaessa, tarkista syötetyt tiedot!";
                     return View();
                 }
                 finally

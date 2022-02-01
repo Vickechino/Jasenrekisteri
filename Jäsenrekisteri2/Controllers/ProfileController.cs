@@ -22,7 +22,7 @@ namespace Jäsenrekisteri2.Controllers
         }
         [HttpPost] //Oman käyttäjän muokkaus
         [ValidateAntiForgeryToken] //Katso https://go.microsoft.com/fwlink/?LinkId=317598
-        public ActionResult Edit([Bind(Include = "password, email, firstname, lastname, member_id, lastseen, joinDate, username, fullname")] Login editee)
+        public ActionResult Edit([Bind(Include = "confirmPassword, password, email, firstname, lastname, member_id, lastseen, joinDate, username, fullname")] Login editee)
         {
             if (ModelState.IsValid && Session["Username"].ToString() == db.Logins.Find(editee.member_id).username)
             {
@@ -34,6 +34,11 @@ namespace Jäsenrekisteri2.Controllers
                     }
                     else
                     {
+                        if (editee.password != editee.confirmPassword)
+                        {
+                            ViewBag.EditProfileError = "Salasanat eivät täsmää!";
+                            return View();
+                        }
                         var bpassword = System.Text.Encoding.UTF8.GetBytes(editee.password);
                         var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword); //Muussa tapauksessa syötetty salasana hashataan ennen tiedon talletusta.
                         editee.password = Convert.ToBase64String(hash);
@@ -50,7 +55,7 @@ namespace Jäsenrekisteri2.Controllers
                 }
                 catch
                 {
-                    ViewBag.CreateUserError = "Error käyttäjääsi muokattaessa, tarkista tiedot";
+                    ViewBag.EditProfileError = "Error käyttäjääsi muokattaessa, tarkista tiedot";
                     return View();
                 }
                 finally

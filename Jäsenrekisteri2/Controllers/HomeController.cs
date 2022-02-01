@@ -124,7 +124,7 @@ namespace Jäsenrekisteri2.Controllers
             }
             catch
             {
-                ViewBag.VerifyCodeError = "Virhe yritä uudelleen myöhemmin!";
+                ViewBag.VerifyCodeError = "Yritä uudelleen myöhemmin! Jos ongelma jatkuu ole yhteydessä tukeen.";
                 return View("EnterCode", LoginModel);
             }
         }
