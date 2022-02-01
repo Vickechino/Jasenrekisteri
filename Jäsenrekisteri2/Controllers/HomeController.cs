@@ -73,7 +73,7 @@ namespace Jäsenrekisteri2.Controllers
         {
             try
             {
-                if (Session["emailVerified"].ToString() == "True" || (Session == null)) return RedirectToAction("Index");
+                if ((Session["Username"] == null) || Session["emailVerified"].ToString() == "True") return RedirectToAction("Index");
                 {
                     Login user = db.Logins.Find(Session["UserID"]);
                     if (user.verificationEmailSent == null || DateTime.Now.AddMinutes(-5) > user.verificationEmailSent.Value)
