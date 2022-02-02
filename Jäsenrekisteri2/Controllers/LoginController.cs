@@ -221,6 +221,9 @@ namespace Jäsenrekisteri2.Controllers
                     if (editee.email != currentEmail) editee.emailVerified = false;
                     else editee.emailVerified = true;
                     editee.emailVerified = currentVerificationState;
+                    if (editee.email.ToString().ToLower() != db.Logins.Find(editee.member_id).email.ToString().ToLower())
+                        editee.emailVerified = false;  //Asetetaan sähköpostin vahvistus booleani falseksi jos osoite vaihdetaan
+                    else editee.emailVerified = db.Logins.Find(editee.member_id).emailVerified; //Muutoin haetaan & käytetään vanhaa arvoa
                     db.Entry(existingEntity).CurrentValues.SetValues(editee);
                     db.SaveChanges();
                     ViewBag.ActionSuccess = "Käyttäjän: " + editee.username + " muokkaus onnistui!";
