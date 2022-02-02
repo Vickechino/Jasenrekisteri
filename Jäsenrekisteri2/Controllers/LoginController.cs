@@ -11,10 +11,9 @@ namespace Jäsenrekisteri2.Controllers
     {
         JäsenrekisteriEntities db = new JäsenrekisteriEntities();
         int i = 0;
-        public ActionResult Index()
+        public ActionResult Index() // Käyttäjäkokemuksen parantamikseksi vastataan myös tähän pyyntöön
         {
-            if (Session["username"] != null) { return RedirectToAction("Index", "Home"); } //Palautetaan login näkymä ellei olla jo kirjauduttu
-            else return View("Login");
+            return RedirectToAction("Login");
         }
             public ActionResult Login() //Login näkymän palautus
         {
@@ -22,7 +21,7 @@ namespace Jäsenrekisteri2.Controllers
             else return View();
         }
         
-        //Käyttäjän tunnistus ALKAA TÄSTÄ
+        // ** Käyttäjän varmistus/sisäänkirjautuminen ALKAA TÄSTÄ ** /
         [HttpPost]
         public ActionResult Authorize([Bind(Include = "username, password")] Login LoginModel) 
         {
@@ -33,16 +32,16 @@ namespace Jäsenrekisteri2.Controllers
                     ViewBag.Error = "Käyttäjänimi ei voi olla tyhjä!";
                     return View("Login", LoginModel);
                 }
-                else if (LoginModel.password == null) 
+                else if (LoginModel.password == null)
                 {
                     ViewBag.Error = "Salasana ei voi olla tyhjä!";
                     return View("Login", LoginModel);
                 }
                 var bpassword = System.Text.Encoding.UTF8.GetBytes(LoginModel.password);
-                var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword);
-                LoginModel.password = Convert.ToBase64String(hash);
-                var LoggedUser = db.Logins.SingleOrDefault(x => x.username == LoginModel.username && x.password == LoginModel.password);
-                if (LoggedUser != null)
+                var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword); //Sotketaan käyttäjän syöte vertailua varten
+                LoginModel.password = Convert.ToBase64String(hash); //Päivitetään modelin sisältö^
+                var LoggedUser = db.Logins.SingleOrDefault(x => x.username == LoginModel.username && x.password == LoginModel.password); //Etsitään tiedoilla käyttäjä
+                if (LoggedUser != null) //Jos käyttäjä löytyy
                 {
                     Session["Username"] = LoggedUser.username;
                     Session["Name"] = LoggedUser.firstname;
@@ -52,23 +51,25 @@ namespace Jäsenrekisteri2.Controllers
                     LoggedUser.lastseen = DateTime.Now;
                     db.Entry(LoggedUser).State = EntityState.Modified;
                     db.SaveChanges();
-                    if (LoggedUser.emailVerified == null || Session["emailVerified"].ToString() == "False")
-                    { return RedirectToAction("EnterCode", "Home"); }
+                    if (LoggedUser.emailVerified == null || Session["emailVerified"].ToString() == "False") // ** Jos käyttäjä ei ole vahvistanut sähköpostiansa...  ** /
+                    { 
+                        return RedirectToAction("EnterCode", "Home");  // ** Ohjataan sähköpostin vahvistus näkymään ** /
+                    }
                     else
                     return RedirectToAction("Index", "Home");
                 }
+                //Jos käyttäjää ei löytynyt palautetaan virhe viesti
                 else
                 {
                     ViewBag.Error = "Virheellinen käyttäjätunnus/salasana";
                     return View("Login", LoginModel);
                 }
             }
-            catch (Exception e)
+            catch
             {
-                ViewBag.Error = e.ToString();
-                return View("Login", LoginModel);
+                return View("Login");
             }
-        }//** Käyttäjän tunnistus LOPPUU **
+        }//** Käyttäjän varmistus/sisäänkirjautuminen LOPPUU **
 
 
         //Käyttäjän Uloskirjautuminen
@@ -90,7 +91,8 @@ namespace Jäsenrekisteri2.Controllers
             }
             else return RedirectToAction("Index");
         }
-        [HttpPost, ActionName("Delete")] //Käyttäjän poisto
+        // ** Käyttäjän poisto ** //
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
@@ -117,10 +119,10 @@ namespace Jäsenrekisteri2.Controllers
                 }
             }
             else return RedirectToAction("Index");
-        }
+        }// ** Käyttäjän poiston koodi  loppuu** //
 
-        //Käyttäjän Luonti näkymän palatus
-        public ActionResult Create() 
+        // ** Käyttäjän Luonti näkymän palatus ** //
+        public ActionResult Create()
         {
             if (Session["UserName"] != null && Session["Permission"].Equals(1))
             {
@@ -128,13 +130,14 @@ namespace Jäsenrekisteri2.Controllers
             }
             else return RedirectToAction("Index", "Home");
         }
-        //Käyttäjän luominen
-        [HttpPost]
+        // ** Käyttäjän Luonti näkymän palatus LOPPUU** //
+
+        [HttpPost]  // ** Käyttäjän luonnin koodi ALKAA ** //
         public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate, fullname, emailVerified")] Login newUser)
         {
-            if (ModelState.IsValid && Session["UserName"] != null && Session["Permission"].ToString() == "1")
+            if (ModelState.IsValid && Session["UserName"] != null && Session["Permission"].ToString() == "1") // ** Tarkistetaan Modelin sekä käyttäjän oikeuksien kelpoisuus ** /
             {
-                var userNameAlreadyExists = db.Logins.Any(x => x.username == newUser.username); //Katsotaan löytyykö samalla nimellä käyttäjä
+                var userNameAlreadyExists = db.Logins.Any(x => x.username == newUser.username); // ** Bool -> löytyykö samalla(syötetyllä) nimellä käyttäjä  ** /
                 if (userNameAlreadyExists)
                 {
                     ViewBag.CreateUserError = "Käyttäjänimi on VARATTU";
@@ -152,19 +155,19 @@ namespace Jäsenrekisteri2.Controllers
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
-                catch (Exception e)
+                catch
                 {
-                    ViewBag.CreateUserError = "Tapahtui virhe! Tarkista syöttämäsi tiedot." + e.ToString();
+                    ViewBag.CreateUserError = "Tapahtui virhe! Tarkista syöttämäsi tiedot.";
                     return View();
                 }
 
             }
             return View(User);
 
-        }
+        } // ** Käyttäjän luonnin koodi LOPPUU TÄHÄN ** //
 
-        //Käyttäjän muokkausnäkymän palautus
-        public ActionResult Edit(int? id) 
+        //** Käyttäjän muokkausnäkymän palautus ALKAA
+        public ActionResult Edit(int? id)  
         {
             if (id == null) { return RedirectToAction("Index"); }
             try
@@ -184,15 +187,22 @@ namespace Jäsenrekisteri2.Controllers
                 return RedirectToAction("Index");
             }
             finally { db.Dispose(); }
-        }
-        [HttpPost] //Käyttäjän muokkaus
+        } //** Käyttäjän muokkausnäkymän palautus LOPPUU ** /
+
+        // ** Käyttäjän muokkaus ** /
+        [HttpPost] 
         [ValidateAntiForgeryToken] //Katso https://go.microsoft.com/fwlink/?LinkId=317598
         public ActionResult Edit([Bind(Include = "username, password, email, firstname, lastname, admin, member_id, lastseen, joinDate, fullname, confirmPassword")] Login editee)
         {
             if (ModelState.IsValid && Session["Permission"].Equals(1))
             {
-                var userNameAlreadyExists = db.Logins.Any(x => x.username == editee.username); //Katsotaan löytyykö samalla nimellä käyttäjää
-                if (userNameAlreadyExists && db.Logins.Find(editee.member_id).username.ToLower() != editee.username.ToLower())
+                if (editee.password != editee.confirmPassword) //Tarkistetaan salasanan vaihto sarakkaitten identikaalisuus
+                {
+                    ViewBag.EditUserError = "Salasanat eivät täsmää!";
+                    return View();
+                }
+                var userNameAlreadyExists = db.Logins.Any(x => x.username == editee.username); // Tarkistetaan löytyykö samalla nimellä käyttäjää ja asetetaan bool arvo sen mukaisesti
+                if (userNameAlreadyExists && db.Logins.Find(editee.member_id).username.ToLower() != editee.username.ToLower()) /*// Jos samalla nimella löytyy käyttäjä palautetaan viesti */
                 {
                     ViewBag.CreateUserError = "Käyttäjänimi varattu!";
                     return View();
@@ -202,36 +212,31 @@ namespace Jäsenrekisteri2.Controllers
                     if (editee.password == null)
                     {
                         editee.password = db.Logins.Find(editee.member_id).password; //Salasana kenttä on tyhjä, haetaan nykyinen tietokannasta, eikä hashata.
+                        editee.confirmPassword = editee.password;
                     }
                     else
                     {
-                        if (editee.password != editee.confirmPassword)
-                        {
-                            ViewBag.EditUserError = "Salasanat eivät täsmää!";
-                            return View();
-                        }
                         var bpassword = System.Text.Encoding.UTF8.GetBytes(editee.password);
                         var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword); //Muussa tapauksessa syötetty salasana hashataan ennen tiedon talletusta.
                         editee.password = Convert.ToBase64String(hash);
                     }
                     var existingEntity = db.Logins.Find(editee.member_id);
-                    editee.fullname = editee.firstname + " " + editee.lastname;
                     var currentVerificationState = db.Logins.Find(editee.member_id).emailVerified;
                     var currentEmail = db.Logins.Find(editee.member_id).email;
-                    if (editee.email != currentEmail) editee.emailVerified = false;
-                    else editee.emailVerified = db.Logins.Find(editee.member_id).emailVerified;
-                    editee.emailVerified = currentVerificationState;
-                    if (editee.email.ToString().ToLower() != db.Logins.Find(editee.member_id).email.ToString().ToLower())
-                        editee.emailVerified = false;  //Asetetaan sähköpostin vahvistus booleani falseksi jos osoite vaihdetaan
-                    else editee.emailVerified = db.Logins.Find(editee.member_id).emailVerified; //Muutoin haetaan & käytetään vanhaa arvoa
-                    db.Entry(existingEntity).CurrentValues.SetValues(editee);
-                    db.SaveChanges();
+                    editee.fullname = editee.firstname + " " + editee.lastname;
+
+                    if (editee.email.ToLower() != currentEmail.ToLower()) // Jos kättäjän syöte ei vastaa nykyistä sähköposti-osoittetta
+                        editee.emailVerified = false; // astetetaan emailVerified Falseksi...
+                    else editee.emailVerified = currentVerificationState; // Muutoin käytetään vanhaa arvoa
+
+                    db.Entry(existingEntity).CurrentValues.SetValues(editee); 
+                    db.SaveChanges(); /** Säästetään muutokset tietokantaan **/
                     ViewBag.ActionSuccess = "Käyttäjän: " + editee.username + " muokkaus onnistui!";
                     return View();
                 }
-                catch (Exception e)
+                catch
                 {
-                    ViewBag.EditUserError = "Virhe käyttäjää muokattaessa, tarkista syötetyt tiedot!" + e.ToString();
+                    ViewBag.EditUserError = "Virhe käyttäjää muokattaessa, tarkista syötetyt tiedot!";
                     return View();
                 }
                 finally
@@ -242,4 +247,4 @@ namespace Jäsenrekisteri2.Controllers
             return View(User);
         }
     }
-}             /*  DEVELOPED BY VICKECHINO ALL RIGHTS RESERVED FFS!*/
+} /********************************* DEVELOPED BY VICKE ALL RIGHTS RESERVED *************************************/
