@@ -216,14 +216,19 @@ namespace Jäsenrekisteri2.Controllers
                     }
                     var existingEntity = db.Logins.Find(editee.member_id);
                     editee.fullname = editee.firstname + " " + editee.lastname;
+                    var currentVerificationState = db.Logins.Find(editee.member_id).emailVerified;
+                    var currentEmail = db.Logins.Find(editee.member_id).email;
+                    if (editee.email != currentEmail) editee.emailVerified = false;
+                    else editee.emailVerified = true;
+                    editee.emailVerified = currentVerificationState;
                     db.Entry(existingEntity).CurrentValues.SetValues(editee);
                     db.SaveChanges();
                     ViewBag.ActionSuccess = "Käyttäjän: " + editee.username + " muokkaus onnistui!";
                     return View();
                 }
-                catch
+                catch (Exception e)
                 {
-                    ViewBag.EditUserError = "Virhe käyttäjää muokattaessa, tarkista syötetyt tiedot!";
+                    ViewBag.EditUserError = "Virhe käyttäjää muokattaessa, tarkista syötetyt tiedot!" + e.ToString();
                     return View();
                 }
                 finally
