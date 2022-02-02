@@ -219,7 +219,7 @@ namespace Jäsenrekisteri2.Controllers
                     var currentVerificationState = db.Logins.Find(editee.member_id).emailVerified;
                     var currentEmail = db.Logins.Find(editee.member_id).email;
                     if (editee.email != currentEmail) editee.emailVerified = false;
-                    else editee.emailVerified = true;
+                    else editee.emailVerified = db.Logins.Find(editee.member_id).emailVerified;
                     editee.emailVerified = currentVerificationState;
                     if (editee.email.ToString().ToLower() != db.Logins.Find(editee.member_id).email.ToString().ToLower())
                         editee.emailVerified = false;  //Asetetaan sähköpostin vahvistus booleani falseksi jos osoite vaihdetaan
