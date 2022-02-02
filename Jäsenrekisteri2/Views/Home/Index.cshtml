@@ -44,7 +44,7 @@
         @Html.ActionLink("Sähköposti vahvistettu", "Index", new { sortOrder = ViewBag.EmailSortParm })
     </th>
     <th>
-        @Html.ActionLink("Admin", "Index", new { sortOrder = ViewBag.AdminSortParm })
+        @Html.ActionLink("Ylläpitäjä", "Index", new { sortOrder = ViewBag.AdminSortParm })
     </th>
     <th>
 </tr>
@@ -81,20 +81,20 @@
     </td>
     @if (item.emailVerified.Equals(true))
     {
-        <td>Vahvistettu</td>
+        <td>Kyllä</td>
     }
     else
     {
-        <td>-</td>
+        <td>Ei</td>
     }
     @if (item.admin.Equals(1))
     {
-        <td>KYLLÄ</td>
+        <td>Kyllä</td>
 
     }
     else
     {
-        <td>EI</td>
+        <td>Ei</td>
     }
     @if (Session["Permission"] != null && Session["Permission"].Equals(1))
     {
