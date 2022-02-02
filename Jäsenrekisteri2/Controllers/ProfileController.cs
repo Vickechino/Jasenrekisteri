@@ -24,6 +24,11 @@ namespace Jäsenrekisteri2.Controllers
         [ValidateAntiForgeryToken] //Katso https://go.microsoft.com/fwlink/?LinkId=317598
         public ActionResult Edit([Bind(Include = "currentPassword, confirmPassword, password, email, firstname, lastname, member_id, lastseen, joinDate, username, fullname, emailVerified")] Login editee)
         {
+            if (editee.currentPassword == null ||editee.currentPassword.Length < 4)
+            {
+                ViewBag.EditProfileError = "Syötä salasanasi!";
+                return View();
+            }
             if (ModelState.IsValid && Session["Username"].ToString() == db.Logins.Find(editee.member_id).username)
             {
                 try

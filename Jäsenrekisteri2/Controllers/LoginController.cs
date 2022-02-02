@@ -127,7 +127,7 @@ namespace Jäsenrekisteri2.Controllers
             else return RedirectToAction("Index", "Home");
         }
         //Käyttäjän luominen
-        [HttpPost]  
+        [HttpPost]
         public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate, fullname, emailVerified")] Login newUser)
         {
             if (ModelState.IsValid && Session["UserName"] != null && Session["Permission"].ToString() == "1")
@@ -141,8 +141,6 @@ namespace Jäsenrekisteri2.Controllers
                 try
                 {
                     newUser.emailVerified = false;
-                    //System.Random random = new System.Random();
-                    //newUser.verificationCode = random.Next(100000, 2147483647);
                     newUser.joinDate = DateTime.Now;
                     var bpassword = System.Text.Encoding.UTF8.GetBytes(newUser.password);
                     var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword);
@@ -152,9 +150,9 @@ namespace Jäsenrekisteri2.Controllers
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
-                catch
+                catch (Exception e)
                 {
-                    ViewBag.CreateUserError = "Tapahtui virhe! Tarkista syöttämäsi tiedot.";
+                    ViewBag.CreateUserError = "Tapahtui virhe! Tarkista syöttämäsi tiedot." + e.ToString();
                     return View();
                 }
 
@@ -162,7 +160,7 @@ namespace Jäsenrekisteri2.Controllers
             return View(User);
 
         }
-        
+
         //Käyttäjän muokkausnäkymän palautus
         public ActionResult Edit(int? id) 
         {

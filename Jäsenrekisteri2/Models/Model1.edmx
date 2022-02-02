@@ -20,7 +20,6 @@
           <Property Name="fullname" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="joinDate" Type="datetime" />
           <Property Name="emailVerified" Type="bit" />
-          <Property Name="verificationCode" Type="int" />
           <Property Name="verificationEmailSent" Type="datetime" />
         </EntityType>
         <EntityContainer Name="JäsenrekisteriModelStoreContainer">

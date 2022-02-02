@@ -27,7 +27,7 @@ namespace Jäsenrekisteri2.Models
         public string fullname { get; set; }
         public Nullable<bool> emailVerified { get; set; }
         public Nullable<System.DateTime> verificationEmailSent { get; set; }
-        [NotMapped] 
+        [NotMapped]
         public Nullable<int> verificationCode { get; set; }
         public string currentPassword { get; set; }
         public string confirmPassword { get; set; }
