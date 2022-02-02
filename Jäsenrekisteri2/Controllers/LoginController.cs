@@ -11,7 +11,6 @@ namespace Jäsenrekisteri2.Controllers
     {
         JäsenrekisteriEntities db = new JäsenrekisteriEntities();
         int i = 0;
-        // GET: Login
         public ActionResult Index()
         {
             if (Session["username"] != null) { return RedirectToAction("Index", "Home"); } //Palautetaan login näkymä ellei olla jo kirjauduttu
@@ -53,7 +52,9 @@ namespace Jäsenrekisteri2.Controllers
                     LoggedUser.lastseen = DateTime.Now;
                     db.Entry(LoggedUser).State = EntityState.Modified;
                     db.SaveChanges();
-                    if (Session["emailVerified"] == null || Session["emailVerified"].ToString() == "False") return RedirectToAction("EnterCode", "Home");
+                    if (LoggedUser.emailVerified == null || Session["emailVerified"].ToString() == "False")
+                    { return RedirectToAction("EnterCode", "Home"); }
+                    else
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -108,7 +109,8 @@ namespace Jäsenrekisteri2.Controllers
                 {
                     if (i < 1)
                     {
-                    return RedirectToAction("Index", "Home"); }
+                    return RedirectToAction("Index", "Home"); 
+                    }
                     ViewBag.DeleteUserError = "Delete failed!";
                     i++;
                     return View();
