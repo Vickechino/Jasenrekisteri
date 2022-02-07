@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using MVCEmail.Models;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -70,7 +69,7 @@ namespace Jäsenrekisteri2.Controllers
         }
 
 
-        public async Task<ActionResult> EnterCode(EmailFormModel model)//Sähköpostin varmistus koodin luonti, sähköpostittaminen ja varmistus näkymän palautus.
+        public async Task<ActionResult> EnterCode()//Sähköpostin varmistus koodin luonti, sähköpostittaminen ja varmistus näkymän palautus.
         {
             try
             {
