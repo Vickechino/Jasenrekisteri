@@ -133,10 +133,15 @@ namespace Jäsenrekisteri2.Controllers
         // ** Käyttäjän Luonti näkymän palatus LOPPUU** //
 
         [HttpPost]  // ** Käyttäjän luonnin koodi ALKAA ** //
-        public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate, fullname, emailVerified")] Login newUser)
+        public ActionResult Create([Bind(Include = "username, password, email, firstname, lastname, admin, joinDate, fullname, emailVerified, confirmPassword")] Login newUser)
         {
             if (ModelState.IsValid && Session["UserName"] != null && Session["Permission"].ToString() == "1") // ** Tarkistetaan Modelin sekä käyttäjän oikeuksien kelpoisuus ** /
             {
+                if (newUser.password != newUser.confirmPassword)
+                {
+                    ViewBag.CreateUserError = "Salasanat eivät täsmää!";
+                    return View();
+                }
                 var userNameAlreadyExists = db.Logins.Any(x => x.username == newUser.username); // ** Bool -> löytyykö samalla(syötetyllä) nimellä käyttäjä  ** /
                 if (userNameAlreadyExists)
                 {
