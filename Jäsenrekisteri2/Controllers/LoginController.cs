@@ -11,14 +11,14 @@ namespace Jäsenrekisteri2.Controllers
     {
         JäsenrekisteriEntities db = new JäsenrekisteriEntities();
         int i = 0;
-        public ActionResult Index() // Käyttäjäkokemuksen parantamikseksi vastataan myös tähän pyyntöön
+        //public ActionResult Index() // Käyttäjäkokemuksen parantamikseksi vastataan myös tähän pyyntöön
+        //{
+        //    return RedirectToAction("Login"); // Ohjataan login näkymän palautukseen
+        //}
+            public ActionResult Login() // Login näkymän palautus
         {
-            return RedirectToAction("Login");
-        }
-            public ActionResult Login() //Login näkymän palautus
-        {
-            if (Session["username"] != null) { return RedirectToAction("Index", "Home"); } //Palautetaan login näkymä ellei olla jo kirjauduttu
-            else return View();
+            if (Session["username"] != null) { return RedirectToAction("Index", "Home"); } //* Palautetaan Index jos ollaan jo kirjauduttu
+            else return View(); // Muutoin palautetaan login näkymä
         }
         
         // ** Käyttäjän varmistus/sisäänkirjautuminen ALKAA TÄSTÄ ** /
@@ -27,12 +27,12 @@ namespace Jäsenrekisteri2.Controllers
         {
             try
             {
-                if (LoginModel.username == null)
+                if (LoginModel.username == null) // Tarkistetaan onko käyttäjänimi kenttä tyhjä
                 {
                     ViewBag.Error = "Käyttäjänimi ei voi olla tyhjä!";
                     return View("Login", LoginModel);
                 }
-                else if (LoginModel.password == null)
+                else if (LoginModel.password == null) // Tarkistetaan onko salasana kenttä tyhjä
                 {
                     ViewBag.Error = "Salasana ei voi olla tyhjä!";
                     return View("Login", LoginModel);
@@ -41,7 +41,7 @@ namespace Jäsenrekisteri2.Controllers
                 var hash = System.Security.Cryptography.MD5.Create().ComputeHash(bpassword); //Sotketaan käyttäjän syöte vertailua varten
                 LoginModel.password = Convert.ToBase64String(hash); //Päivitetään modelin sisältö^
                 var LoggedUser = db.Logins.SingleOrDefault(x => x.username == LoginModel.username && x.password == LoginModel.password); //Etsitään tiedoilla käyttäjä
-                if (LoggedUser != null) //Jos käyttäjä löytyy
+                if (LoggedUser != null) //Jos käyttäjä löytyy (ei ole = null)
                 {
                     Session["Username"] = LoggedUser.username;
                     Session["Name"] = LoggedUser.firstname;
@@ -51,15 +51,14 @@ namespace Jäsenrekisteri2.Controllers
                     LoggedUser.lastseen = DateTime.Now;
                     db.Entry(LoggedUser).State = EntityState.Modified;
                     db.SaveChanges();
-                    if (LoggedUser.emailVerified == null || Session["emailVerified"].ToString() == "False") // ** Jos käyttäjä ei ole vahvistanut sähköpostiansa...  ** /
+                    if (LoggedUser.emailVerified == null || Session["emailVerified"].ToString() == "False") // ** Jos käyttäjä ei ole vahvistanut sähköpostiosoitetta...  ** /
                     { 
                         return RedirectToAction("EnterCode", "Home");  // ** Ohjataan sähköpostin vahvistus näkymään ** /
                     }
                     else
                     return RedirectToAction("Index", "Home");
                 }
-                //Jos käyttäjää ei löytynyt palautetaan virhe viesti
-                else
+                else //Syötetyillä tiedoilla ei löytyntyt käyttäjää: palautetaan virheviesti
                 {
                     ViewBag.Error = "Virheellinen käyttäjätunnus/salasana";
                     return View("Login", LoginModel);
@@ -75,6 +74,7 @@ namespace Jäsenrekisteri2.Controllers
         //Käyttäjän Uloskirjautuminen
         public ActionResult LogOut() 
         {
+            if (Session != null)
             Session.Abandon();
             return RedirectToAction("Index", "Home");
         }
@@ -91,14 +91,14 @@ namespace Jäsenrekisteri2.Controllers
             }
             else return RedirectToAction("Index");
         }
-        // ** Käyttäjän poisto ** //
+        // ** Käyttäjän poiston koodi alkaa ** //
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            if (Session["Username"] != null && Session["Permission"].Equals(1))
+            if (Session["Username"] != null && Session["Permission"].Equals(1)) // Tarkistetaan oikeuksien riittävyys
             {
-                try
+                try // Yritetään poistaa rivi tietokannasta
                 {
                     Login user = db.Logins.Find(id);
                     db.Logins.Remove(user);
@@ -107,7 +107,7 @@ namespace Jäsenrekisteri2.Controllers
                     ViewBag.ActionSuccess = "Käyttäjän: " + user.username + " poisto onnistui!";
                     return View();
                 }
-                catch
+                catch // Poisto epäonnistui: palautetaan virheviesti / ohjataan etusivulle
                 {
                     if (i < 1)
                     {
@@ -137,18 +137,18 @@ namespace Jäsenrekisteri2.Controllers
         {
             if (ModelState.IsValid && Session["UserName"] != null && Session["Permission"].ToString() == "1") // ** Tarkistetaan Modelin sekä käyttäjän oikeuksien kelpoisuus ** /
             {
-                if (newUser.password != newUser.confirmPassword)
+                if (newUser.password != newUser.confirmPassword) // Tarkistetaan täsmäävätkö salasanat
                 {
                     ViewBag.CreateUserError = "Salasanat eivät täsmää!";
                     return View();
                 }
                 var userNameAlreadyExists = db.Logins.Any(x => x.username == newUser.username); // ** Bool -> löytyykö samalla(syötetyllä) nimellä käyttäjä  ** /
-                if (userNameAlreadyExists)
+                if (userNameAlreadyExists) // Jos käyttäjänimi on varattu
                 {
                     ViewBag.CreateUserError = "Käyttäjänimi on VARATTU";
                     return View();
                 }
-                try
+                try // Yritetään luoda tietokantaan uusi rivi/käyttäjä
                 {
                     newUser.emailVerified = false;
                     newUser.joinDate = DateTime.Now;
@@ -226,15 +226,14 @@ namespace Jäsenrekisteri2.Controllers
                         editee.password = Convert.ToBase64String(hash);
                     }
                     var existingEntity = db.Logins.Find(editee.member_id);
-                    var currentEmail = db.Logins.Find(editee.member_id).email;
                     editee.fullname = editee.firstname + " " + editee.lastname;
 
-                    if (editee.email.ToLower() != currentEmail.ToLower()) // Jos kättäjän syöte ei vastaa nykyistä sähköposti-osoittetta
+                    if (editee.email.ToLower() != existingEntity.email.ToLower()) // Jos kättäjän syöte ei vastaa nykyistä sähköposti-osoittetta
                         editee.emailVerified = false; // astetetaan emailVerified Falseksi...
                     else editee.emailVerified = existingEntity.emailVerified; // Muutoin käytetään vanhaa arvoa
 
                     db.Entry(existingEntity).CurrentValues.SetValues(editee); // Asetetaan arvot existingEntityyn
-                    db.SaveChanges(); /** Säästetään muutokset tietokantaan **/
+                    db.SaveChanges(); /* Säästetään muutokset tietokantaan */
                     ViewBag.ActionSuccess = "Käyttäjän: " + editee.username + " muokkaus onnistui!";
                     return View();
                 }
