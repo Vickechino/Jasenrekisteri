@@ -201,7 +201,7 @@ namespace Jäsenrekisteri2.Controllers
         {
             if (ModelState.IsValid && Session["Permission"].Equals(1))
             {
-                if (editee.password != editee.confirmPassword) //Tarkistetaan salasanan vaihto sarakkaitten identikaalisuus
+                if (editee.password != editee.confirmPassword) //Tarkistetaan salasanan vaihto sarakkeiden identikaalisuus
                 {
                     ViewBag.EditUserError = "Salasanat eivät täsmää!";
                     return View();
@@ -226,15 +226,14 @@ namespace Jäsenrekisteri2.Controllers
                         editee.password = Convert.ToBase64String(hash);
                     }
                     var existingEntity = db.Logins.Find(editee.member_id);
-                    var currentVerificationState = db.Logins.Find(editee.member_id).emailVerified;
                     var currentEmail = db.Logins.Find(editee.member_id).email;
                     editee.fullname = editee.firstname + " " + editee.lastname;
 
                     if (editee.email.ToLower() != currentEmail.ToLower()) // Jos kättäjän syöte ei vastaa nykyistä sähköposti-osoittetta
                         editee.emailVerified = false; // astetetaan emailVerified Falseksi...
-                    else editee.emailVerified = currentVerificationState; // Muutoin käytetään vanhaa arvoa
+                    else editee.emailVerified = existingEntity.emailVerified; // Muutoin käytetään vanhaa arvoa
 
-                    db.Entry(existingEntity).CurrentValues.SetValues(editee); 
+                    db.Entry(existingEntity).CurrentValues.SetValues(editee); // Asetetaan arvot existingEntityyn
                     db.SaveChanges(); /** Säästetään muutokset tietokantaan **/
                     ViewBag.ActionSuccess = "Käyttäjän: " + editee.username + " muokkaus onnistui!";
                     return View();
