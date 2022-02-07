@@ -26,6 +26,7 @@ namespace Jäsenrekisteri2.Controllers
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
             ViewBag.EmailSortParm = sortOrder == "email_desc" ? "email" : "email_desc";
             ViewBag.AdminSortParm = sortOrder == "admin_desc" ? "admin" : "admin_desc";
+            ViewBag.emailVerifiedSortParm = sortOrder == "emailVerified_desc" ? "emailVerified" : "emailVerified_desc";
             var members = from s in db.Logins
                           select s;
             switch (sortOrder)
@@ -51,19 +52,19 @@ namespace Jäsenrekisteri2.Controllers
                 case "email":
                     members = members.OrderBy(s => s.email);
                     break;
+                case "emailVerified":
+                    members = members.OrderBy(s => s.emailVerified);
+                    break;
+                case "emailVerified_desc":
+                    members = members.OrderByDescending(s => s.emailVerified);
+                    break;
                 default:
                     members = members.OrderBy(s => s.fullname);
                     break;
             }
             try
             {
-                //foreach (var item in members)
-                //{
-                //    item.password = null;
-                //    item.username = null;
-                //}
                 return View(members.ToList());
-
             }
             catch { return View("About"); }
         }
