@@ -177,9 +177,9 @@ namespace Jäsenrekisteri2.Controllers
             if (id == null) { return RedirectToAction("Index"); }
             try
             {
-                if (Session["Username"] == null) return RedirectToAction("Login", "Home");
+                if (Session["Username"] == null || Session["Permission"].ToString() != "1") return RedirectToAction("Index");
                 Login user = db.Logins.Find(id);
-                if (user == null) RedirectToAction("Index", "Home");
+                if (user == null) RedirectToAction("Index");
                 if (Session["Username"] != null && Session["Permission"].Equals(1))
                 {
                     user.password = "";
