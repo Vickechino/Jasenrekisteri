@@ -11,10 +11,10 @@ namespace Jäsenrekisteri2.Controllers
     {
         JäsenrekisteriEntities db = new JäsenrekisteriEntities();
         int i = 0;
-        //public ActionResult Index() // Käyttäjäkokemuksen parantamikseksi vastataan myös tähän pyyntöön
-        //{
-        //    return RedirectToAction("Login"); // Ohjataan login näkymän palautukseen
-        //}
+        public ActionResult Index()
+        {
+            return RedirectToAction("Login"); // Ohjataan login näkymän palautukseen
+        }
             public ActionResult Login() // Login näkymän palautus
         {
             if (Session["username"] != null) { return RedirectToAction("Index", "Home"); } //* Palautetaan Index jos ollaan jo kirjauduttu
