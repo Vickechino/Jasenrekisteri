@@ -76,6 +76,7 @@ namespace Jäsenrekisteri2.Controllers
                 if ((Session["Username"] == null) || Session["emailVerified"].ToString() == "True") return RedirectToAction("Index");
                 {
                     Login user = db.Logins.Find(Session["UserID"]);
+                    Session["Email"] = user.email;
                     if (user.verificationEmailSent == null || DateTime.Now.AddMinutes(-5) > user.verificationEmailSent.Value)
                     {
                         System.Random random = new System.Random();
@@ -110,6 +111,7 @@ namespace Jäsenrekisteri2.Controllers
 
                 if (Session["VerCode"].ToString() == LoginModel.verificationCode.ToString()) /*Verrataan koodia käyttäjän syötteeseen*//** Oikealla puolella on käyttäjän syöte **/
                 {
+                    string email = user.email.ToString();
                     var existingEntity = db.Logins.Find(Session["UserID"]);
                     existingEntity.emailVerified = true;
                     db.Entry(existingEntity).CurrentValues.SetValues(existingEntity);

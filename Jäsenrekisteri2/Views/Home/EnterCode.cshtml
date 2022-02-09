@@ -19,8 +19,9 @@
             @Html.ValidationMessageFor(model => model.verificationCode, "", new { @class = "text-danger" })
         </div>
     </div>
-    <p>Jos et saanut koodia, tarkista roskapostista! Muutoin @Html.ActionLink("tarkista/päivitä sähköposti osoitteesti", "Edit", "Profile")</p>
-    <p>Päivityksen jälkeen odota viisi minuuttia ja yritä uudelleen</p>
+    <p>Lähetimme koodin osoitteeseen @Session["Email"]</p>
+    <p>Jos et saanut koodia, tarkista roskapostista! Mikäli osoite on väärä @Html.ActionLink("päivitä sähköposti osoitteesti", "Edit", "Profile")</p>
+    <p>Päivityksen jälkeen odota vähintään viisi minuuttia ennen uutta yritystä</p>
     <div class="col-lg-offset-2">
         <label class="text-danger">
             @ViewBag.Error
