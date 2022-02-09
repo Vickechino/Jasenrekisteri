@@ -23,7 +23,7 @@ namespace Jäsenrekisteri2.Models
         public Nullable<int> admin { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
-        public Nullable<System.DateTime> joinDate { get; set; }
+        public System.DateTime joinDate { get; set; }
         public string fullname { get; set; }
         public Nullable<bool> emailVerified { get; set; }
         public Nullable<System.DateTime> verificationEmailSent { get; set; }
